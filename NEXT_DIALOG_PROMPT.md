@@ -5,7 +5,7 @@
 Начни только с минимального восстановления checkpoint:
 
 1. Выполни только `git status --short --branch`.
-2. Прочитай последний handoff в `docs/handoffs/` и `docs/admin-panel.md`.
+2. Прочитай `docs/handoffs/2026-08-03-0935-context-handoff.md` и `docs/admin-panel.md`.
 
 Не запускай `npm install`, dev-серверы, build, test suites, Supabase reset, браузерные проверки, visual audit и deployment inspection. Не начинай реализацию и не генерируй новый дизайн на старте диалога.
 
