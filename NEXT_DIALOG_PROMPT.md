@@ -9,7 +9,7 @@
 - `DESIGN.md`
 - `TASKS.md`
 - `design/prototypes/djey-music-mobile-player.html`
-- latest file in `docs/handoffs/`
+- `docs/handoffs/2026-08-03-2033-context-handoff.md`
 
 Не начинай проект заново и не пересматривай утверждённые player/catalog/Add-Edit designs. Owner Auth/session boundary, защищённый `/admin`, production catalog shell, audio-only Add/Edit Track и lifecycle уже реализованы, проверены и сохранены на GitHub. На старте не запускай install, серверы, build, broad tests, Supabase reset, browser sweep, design generation или deployment inspection.
 
