@@ -61,11 +61,19 @@ Album artwork is not the dominant element of the full player. Uploaded artwork r
 
 ## Owner admin relationship
 
-The protected owner admin belongs to the same DJey Music design system as the approved player: light neomorphism, tactile controls, inset work surfaces, Green Receiver by default, and White Neon/Dark Amber alternatives driven by shared tokens.
+The protected owner admin belongs to the same DJey Music material system as the approved player: light neomorphism, tactile controls, inset work surfaces, illuminated displays, and palette values driven by shared semantic tokens.
 
 This does not require copying the player layout. Catalog rows, upload fields, progress, validation, publish controls, and confirmations should use functional admin-specific composition while remaining visibly part of the same product. A generic SaaS dashboard or raw Supabase Studio look is rejected.
 
-The exact admin composition is not yet approved. See `docs/admin-panel.md`; present a concrete candidate and wait for user approval before implementing the visible admin surface.
+Direct owner-admin corrections approved on 2026-08-03 amend the theme relationship for the admin only:
+
+- White Neon is the default owner-admin theme.
+- Dark Amber is its only alternate theme through one light/dark control.
+- Green Receiver remains part of the player contract but is removed from the owner admin.
+- Every owner-admin label and message is English.
+- The admin remains a centered mobile composition even on wide laptop browsers; desktop adaptation remains deferred.
+
+The owner-admin catalog composition is approved. Its canonical reference is `design/prototypes/djey-music-owner-admin-catalog.html`, with the exact contract in `docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`. Production implementation may now begin without another catalog exploration round. The full-screen Add/Edit track surface is the next design and implementation surface.
 
 These items may be designed later without changing the approved mobile hierarchy.
 

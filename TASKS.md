@@ -23,8 +23,8 @@
 
 ## Next phase: owner admin interface and functionality
 
-1. [ ] At the new-dialog checkpoint, acknowledge the saved state and wait for the user's concrete admin-panel instruction; do not run startup tests or begin implementation.
-2. [ ] Present a concrete admin composition using the settled DJey Music neomorphic design system and wait for explicit visual approval.
+1. [x] At the new-dialog checkpoint, acknowledge the saved state and wait for the user's concrete admin-panel instruction; do not run startup tests or begin implementation.
+2. [x] Approve the mobile owner-admin catalog composition and preserve it at `design/prototypes/djey-music-owner-admin-catalog.html` plus the owner-admin design spec.
 3. [ ] Bootstrap the local owner Auth user and `private.owner_allowlist` mapping.
 4. [ ] Add the Next.js Auth callback/session proxy and a protected owner route using `requireOwner`.
 5. [ ] Implement the approved catalog shell and add/edit track form.
@@ -32,7 +32,7 @@
 7. [ ] Connect draft, preview, publish, unpublish, reorder, update, and confirmed idempotent delete.
 8. [ ] Verify allowed-owner and rejected-non-owner sessions plus focused media lifecycle behavior.
 
-Current waiting point: backend foundation is complete and the admin visual relationship is settled, but no admin UI or owner Auth flow has been implemented. The next dialog must stop after acknowledging this checkpoint and wait for the user's instruction.
+Current implementation point: backend foundation and the owner-admin catalog design are approved and preserved, but no production admin UI or owner Auth flow has been implemented. The next dialog begins directly with the protected owner boundary and approved mobile admin shell, then the Add/Edit track workflow. Do not restart catalog design exploration or run broad startup checks.
 
 Known dependency follow-up: `npm audit --omit=dev` currently reports three high-severity transitive advisories through the latest stable Next.js dependency tree (`postcss` and `sharp`). Do not run the suggested forced downgrade to Next.js 9; upgrade to the first compatible patched Next.js release and re-run the full gate.
 

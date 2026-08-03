@@ -6,9 +6,11 @@ GitHub repository: https://github.com/byloftart/djey-music (private at the curre
 
 ## Current status
 
-The mobile player design was approved on 2026-08-03. A minimal Next.js 16 TypeScript/App Router application and the first local Supabase backend foundation now exist. The foundation includes a versioned `tracks` migration, private audio/cover buckets, RLS for published-only public reads, an owner allowlist boundary, and pgTAP policy tests. No cloud Supabase project is linked and no Vercel deployment exists.
+The mobile player and mobile owner-admin catalog designs were approved on 2026-08-03. A minimal Next.js 16 TypeScript/App Router application and the first local Supabase backend foundation exist. The foundation includes a versioned `tracks` migration, private audio/cover buckets, RLS for published-only public reads, an owner allowlist boundary, and pgTAP policy tests. No production admin UI, cloud Supabase project, or Vercel deployment exists yet.
 
 Approved prototype: [`design/prototypes/djey-music-mobile-player.html`](design/prototypes/djey-music-mobile-player.html)
+
+Approved owner-admin catalog prototype: [`design/prototypes/djey-music-owner-admin-catalog.html`](design/prototypes/djey-music-owner-admin-catalog.html)
 
 To preview it locally:
 
@@ -45,7 +47,9 @@ This is appropriate for the small catalog because it keeps the application, data
 
 ## Backend phase
 
-The local Supabase foundation described in [`docs/backend-foundation.md`](docs/backend-foundation.md) is implemented. The next project phase is the protected owner admin described in [`docs/admin-panel.md`](docs/admin-panel.md): first approve its concrete composition, then create/invite the owner, add the session boundary, and implement the validated media lifecycle. The admin uses the same DJey Music light-neomorphic visual system and three palette tokens as the player without copying the player geometry.
+The local Supabase foundation described in [`docs/backend-foundation.md`](docs/backend-foundation.md) is implemented. The mobile catalog composition for the protected owner admin is approved and documented in [`docs/admin-panel.md`](docs/admin-panel.md) and [`docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`](docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md). The next phase begins with the owner Auth/session boundary and production admin shell, followed by the full-screen Add/Edit track workflow and validated media lifecycle.
+
+The owner admin is English-only, uses White Neon by default with Dark Amber as the sole alternate, and stays a centered mobile composition on wide browsers. Green Receiver remains part of the separate player contract.
 
 Environment variable names are documented in [`.env.example`](.env.example). Real values must stay in local/Vercel environment configuration and must never be committed.
 

@@ -1,18 +1,20 @@
 # DJey Music Owner Admin Contract
 
-Status: planning checkpoint for the next dialog. No owner-facing admin interface has been implemented yet.
+Status: owner-admin catalog design approved on 2026-08-03. No production owner-facing admin interface has been implemented yet.
 
 ## Settled visual relationship
 
 The owner admin is part of the same DJey Music product and must use the same visual system as the approved player.
 
 - Use the same light neomorphism: raised shells, inset working surfaces, soft paired shadows, tactile controls, readable illuminated states, and comfortable touch targets.
-- Green Receiver is the default palette. White Neon and Dark Amber remain alternate token sets rather than separate implementations.
+- White Neon is the default owner-admin palette. Dark Amber is its only alternate through one light/dark toggle. Green Receiver is not used in the admin and remains limited to the separate player contract.
 - Reuse the same typography character, glow logic, radii, spacing rhythm, and hardware-inspired feeling.
 - The admin must not look like a generic SaaS dashboard, default Supabase Studio, or an unrelated table template.
 - Sharing a design system does not mean copying the player geometry. The catalog, upload form, validation, progress, and destructive confirmations need task-appropriate layouts.
 - Do not add spectrum displays or playback decorations where they do not serve an admin task.
-- Exact admin composition has not been approved. The next concrete visual candidate must be shown to the user before production UI implementation.
+- The catalog composition is approved at `design/prototypes/djey-music-owner-admin-catalog.html`; its exact contract is `docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`.
+- Every owner-admin label, field, status, action, error, and confirmation is English.
+- Wide browsers continue to show the centered mobile composition; desktop adaptation remains deferred.
 
 The canonical player prototype remains `design/prototypes/djey-music-mobile-player.html` and must not be modified while designing the admin.
 
@@ -27,6 +29,16 @@ The protected owner area will eventually provide:
 5. Draft save, authorized preview, explicit publish, unpublish, reorder, and metadata update.
 6. Permanent delete only after explicit confirmation, with idempotent database and storage cleanup.
 7. Clear empty, loading, uploading, success, validation-error, and partial-failure states.
+
+## Approved catalog behavior
+
+- Header: centered `DJey Music / Admin Panel`, left account control revealing `Sign Out`, and one White Neon/Dark Amber switch on the right.
+- Equal illuminated readouts: `48 TRACKS TOTAL` and the `All Tracks / Published / Drafts` filter.
+- Compact catalog cards show no cover, no numeric order, no text status badge, and no overflow menu.
+- Green status indicator means Published; red means Draft. It sits in a narrow left column centered between the title and genre lines.
+- Each card has one `Edit` action. Preview, Publish/Unpublish, and Delete belong in the full-screen editor.
+- Long-press reorder must preserve native scrolling, suppress iOS text selection, show a lifted card and insertion placeholder, persist `display_order`, and confirm `Order updated`.
+- The full-width `Add Track` dock remains above iOS browser controls through dynamic viewport sizing, normal flex flow, and safe-area padding.
 
 ## Existing backend boundary
 
@@ -45,21 +57,18 @@ The protected owner area will eventually provide:
 
 ## Approval and implementation sequence
 
-After the user gives a concrete instruction in the next dialog:
+The next dialog is authorized to begin implementation from the approved catalog rather than restart design exploration:
 
-1. Read `DESIGN.md`, this contract, and the latest explicit user correction.
-2. Inspect only the relevant current owner/backend files.
-3. Present one concrete admin composition or a small number of meaningful alternatives.
-4. Wait for explicit approval before implementing the visible admin interface.
-5. Implement owner authentication and the approved admin shell without weakening RLS or changing the player prototype.
-6. Add focused verification for the functionality changed in that step; broad project gates belong at a meaningful completion checkpoint, not at dialog startup.
+1. Read the latest handoff, this contract, and the approved owner-admin design spec.
+2. Inspect the existing auth/Supabase helpers and minimal App Router files.
+3. Implement owner authentication, callback/session protection, and the approved mobile admin shell without weakening RLS or changing either canonical prototype.
+4. Implement the full-screen Add/Edit track workflow and connect focused lifecycle behavior in small verified steps.
+5. Run focused verification after each functional slice; broad project gates belong at a meaningful completion checkpoint, not at dialog startup.
+6. Deployment and cloud-resource creation remain separate explicit operations after the local owner flow is ready.
 
 ## Low-overhead next-dialog entry
 
-The next dialog is a waiting checkpoint, not authorization to begin work immediately.
-
-- First run only `git status --short --branch`.
-- Read the latest handoff and this file.
-- Briefly acknowledge the exact saved state, the settled admin visual relationship, and the pending admin work.
-- Then stop and wait for the user's concrete instruction.
-- Do not run installs, servers, builds, test suites, Supabase reset, browser sweeps, visual audits, deployment checks, or implementation at startup.
+- First run `git status --short --branch`.
+- Read the latest handoff, this file, and `docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`.
+- Briefly acknowledge the approved catalog checkpoint and begin with the exact next implementation step recorded in the handoff.
+- Do not run installs, servers, builds, broad test suites, Supabase reset, browser sweeps, visual audits, or deployment checks merely to enter the dialog.
