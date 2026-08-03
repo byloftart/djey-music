@@ -1,12 +1,14 @@
 # DJey Music Agent Instructions
 
-## Read first
+## Low-overhead next-dialog entry
 
-Before editing, read `README.md`, `DESIGN.md`, `TASKS.md`, `docs/`, the latest file in `docs/handoffs/`, and `git status --short --branch`.
+At the saved admin-panel waiting checkpoint, first run only `git status --short --branch`, then read the latest file in `docs/handoffs/` and `docs/admin-panel.md`. Briefly acknowledge the exact checkpoint and wait for the user's concrete instruction. Do not start servers, installs, builds, test suites, Supabase reset, browser sweeps, audits, design generation, or implementation at dialog startup.
+
+After the user gives a concrete instruction and before editing, read `README.md`, `DESIGN.md`, `TASKS.md`, the relevant files under `docs/`, and the latest direct user correction. Do not reread historical handoffs unless the latest handoff explicitly points to one.
 
 ## Current stage
 
-The mobile player design is approved. The next stage is backend foundation and owner upload management. Do not restart visual exploration, redesign the player, or scaffold unrelated features.
+The mobile player design is approved and the Next.js/Supabase backend foundation is implemented locally. The next stage is the owner admin interface and functionality, but it must begin only after a concrete user instruction in the next dialog. Do not restart player exploration, redesign the player, or scaffold unrelated features.
 
 Repository: `https://github.com/byloftart/djey-music.git`; default working branch: `main`.
 
@@ -21,6 +23,8 @@ Repository: `https://github.com/byloftart/djey-music.git`; default working branc
 - Keep the first release a PWA. Do not add native apps.
 - No public uploads, comments, follows, messaging, payments, ads, or recommendation feed.
 - Keep unpublished metadata and media private.
+- The owner admin uses the same light-neomorphic DJey Music design system and Green Receiver/White Neon/Dark Amber tokens as the player, with task-appropriate admin layouts rather than copied player geometry.
+- Do not implement a generic SaaS dashboard. The exact admin composition still requires explicit user approval.
 
 ## Backend guardrails
 

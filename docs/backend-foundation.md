@@ -2,6 +2,20 @@
 
 This is the exact starting scope for the next dialog. It describes the backend and owner-upload foundation; it does not authorize redesigning the approved player.
 
+## Implemented local checkpoint
+
+The first local foundation was implemented on 2026-08-03 in `supabase/migrations/20260803044004_create_backend_foundation.sql`.
+
+- `public.tracks` includes the proposed fields, validation constraints, indexes, automatic `updated_at`, explicit Data API grants, and RLS.
+- `private.owner_allowlist` maps an authenticated user UUID to a normalized approved email. The server also evaluates `OWNER_EMAIL_ALLOWLIST`; both boundaries must agree.
+- `track-audio` and `track-covers` are private buckets. Published objects are readable only when their exact path is referenced by a published track.
+- Production playback will use a trusted route that resolves only published metadata and issues a short-lived signed URL for the exact private audio object. The deployed URL must pass HTTP range/seek verification before release.
+- Storage mutation paths and accepted extensions are constrained by policy; bucket MIME allowlists provide another boundary.
+- `supabase/tests/database/backend_foundation.test.sql` contains 24 pgTAP checks for schema, policies, published/draft visibility, non-owner denial, and owner reads/inserts.
+- Clean local reset, pgTAP, schema lint, and Supabase security/performance advisors pass.
+
+No cloud Supabase project or storage delivery has been created. HTTP range behavior must be verified against the eventual deployed object delivery path.
+
 ## Proposed `tracks` model
 
 - `id`: UUID primary key.
@@ -64,4 +78,3 @@ Define maximum byte sizes through environment/configuration rather than hard-cod
 - Deleting a track removes its associated objects.
 - Privileged keys are absent from browser bundles and committed files.
 - Deployed audio supports play, pause, and seeking/range requests.
-

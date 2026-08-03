@@ -1,24 +1,23 @@
-# Starter Prompt: Backend and Upload Phase
+# Starter Prompt: Owner Admin Interface and Functionality
 
 Продолжаем проект: `/Users/iram/Documents/DJey Audio`
 
-Сначала полностью изучи:
+Начни только с минимального восстановления checkpoint:
 
-- `AGENTS.md`
-- `README.md`
-- `DESIGN.md`
-- `TASKS.md`
-- `docs/`
-- `docs/handoffs/2026-08-03-0823-context-handoff.md`
-- результат `git status --short --branch`
+1. Выполни только `git status --short --branch`.
+2. Прочитай последний handoff в `docs/handoffs/` и `docs/admin-panel.md`.
 
-Не начинай проект заново и не пересматривай решения, отмеченные как settled/rejected. Мобильный плеер уже утвержден; его канонический прототип находится в `design/prototypes/djey-music-mobile-player.html`. Не возвращайся к визуальному дизайну и не меняй его без моего прямого запроса.
+Не запускай `npm install`, dev-серверы, build, test suites, Supabase reset, браузерные проверки, visual audit и deployment inspection. Не начинай реализацию и не генерируй новый дизайн на старте диалога.
 
-После чтения кратко сообщи:
+После чтения кратко сообщи максимум четырьмя пунктами:
 
 1. где остановился проект;
 2. что уже утверждено и сохранено;
-3. состояние Git/GitHub, backend и deployment;
-4. какой точный следующий шаг ты начнешь выполнять.
+3. что еще не реализовано в owner admin;
+4. что ты ждешь мою конкретную инструкцию по следующему шагу.
 
-Затем продолжай с backend-этапа: прочитай `docs/backend-foundation.md`, создай основу Next.js с TypeScript и App Router и подготовь первые локальные Supabase migrations/policies для таблицы `tracks`, audio/cover storage, published-only публичного чтения и allowlisted owner writes. Сохрани утвержденный прототип без изменений. Не создавай платные ресурсы и не выполняй deployment без отдельного явного разрешения.
+После этого остановись и жди моей команды. Не предпринимай никаких действий самостоятельно.
+
+Контекст следующего этапа: интерфейс admin-панели должен использовать тот же light-neomorphic дизайн DJey Music, Green Receiver по умолчанию и White Neon/Dark Amber как общие token-based палитры. Это та же дизайн-система, но с функциональной компоновкой каталога, upload/edit формы, статусов и управления публикацией, а не копия геометрии плеера. Generic SaaS dashboard запрещен. Точная композиция admin-панели еще не утверждена и должна быть показана мне до реализации.
+
+После моей конкретной инструкции прочитай `AGENTS.md`, `README.md`, `DESIGN.md`, `TASKS.md` и только релевантные документы/файлы. Не изменяй канонический прототип `design/prototypes/djey-music-mobile-player.html`. Не создавай cloud-ресурсы, не выполняй deployment и не push без отдельного явного разрешения.

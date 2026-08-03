@@ -59,6 +59,14 @@ Album artwork is not the dominant element of the full player. Uploaded artwork r
 - Final typeface and production icon set.
 - Exact visualization performance budget after implementation profiling.
 
+## Owner admin relationship
+
+The protected owner admin belongs to the same DJey Music design system as the approved player: light neomorphism, tactile controls, inset work surfaces, Green Receiver by default, and White Neon/Dark Amber alternatives driven by shared tokens.
+
+This does not require copying the player layout. Catalog rows, upload fields, progress, validation, publish controls, and confirmations should use functional admin-specific composition while remaining visibly part of the same product. A generic SaaS dashboard or raw Supabase Studio look is rejected.
+
+The exact admin composition is not yet approved. See `docs/admin-panel.md`; present a concrete candidate and wait for user approval before implementing the visible admin surface.
+
 These items may be designed later without changing the approved mobile hierarchy.
 
 ## Rejected directions
@@ -70,4 +78,3 @@ These items may be designed later without changing the approved mobile hierarchy
 - The labels `SKIN`, `SPECTRUM / LIVE`, and `NEO CONSOLE · MODEL 01` in the final player.
 - Brand variants `J Music`, `DJey Audio`, or generic placeholder naming. The approved name is `DJey Music`.
 - Copying Spotify, Apple Music, Yandex Music, Winamp, or another product's visual identity.
-
