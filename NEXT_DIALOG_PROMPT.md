@@ -1,23 +1,35 @@
-# Starter Prompt: Owner Admin Interface and Functionality
+# Starter Prompt: Implement Approved Owner Admin
 
 Продолжаем проект: `/Users/iram/Documents/DJey Audio`
 
-Начни только с минимального восстановления checkpoint:
+Начни с минимального восстановления checkpoint:
 
-1. Выполни только `git status --short --branch`.
-2. Прочитай `docs/handoffs/2026-08-03-0935-context-handoff.md` и `docs/admin-panel.md`.
+1. Выполни `git status --short --branch`.
+2. Прочитай:
+   - `AGENTS.md`
+   - `README.md`
+   - `DESIGN.md`
+   - `TASKS.md`
+   - `docs/admin-panel.md`
+   - `docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`
+   - `docs/handoffs/2026-08-03-1227-context-handoff.md`
 
-Не запускай `npm install`, dev-серверы, build, test suites, Supabase reset, браузерные проверки, visual audit и deployment inspection. Не начинай реализацию и не генерируй новый дизайн на старте диалога.
+Не начинай проект заново и не возвращайся к исследованию дизайна каталога. Каталог owner admin утверждён и сохранён в `design/prototypes/djey-music-owner-admin-catalog.html`. Канонический player prototype `design/prototypes/djey-music-mobile-player.html` также утверждён; оба файла не изменяй.
 
-После чтения кратко сообщи максимум четырьмя пунктами:
+На старте не запускай `npm install`, dev-серверы, build, broad test suites, Supabase reset, browser sweeps, visual audit или deployment inspection. Сначала кратко подтверди максимум четырьмя пунктами:
 
 1. где остановился проект;
 2. что уже утверждено и сохранено;
-3. что еще не реализовано в owner admin;
-4. что ты ждешь мою конкретную инструкцию по следующему шагу.
+3. что ещё не реализовано;
+4. какой точный implementation step начинаешь.
 
-После этого остановись и жди моей команды. Не предпринимай никаких действий самостоятельно.
+Затем сразу продолжай с указанного next step, не ожидая дополнительной команды:
 
-Контекст следующего этапа: интерфейс admin-панели должен использовать тот же light-neomorphic дизайн DJey Music, Green Receiver по умолчанию и White Neon/Dark Amber как общие token-based палитры. Это та же дизайн-система, но с функциональной компоновкой каталога, upload/edit формы, статусов и управления публикацией, а не копия геометрии плеера. Generic SaaS dashboard запрещен. Точная композиция admin-панели еще не утверждена и должна быть показана мне до реализации.
+1. Изучи `lib/auth/require-owner.ts`, `lib/supabase/server.ts`, `lib/supabase/client.ts`, `app/layout.tsx`, `app/page.tsx` и backend migration.
+2. Реализуй owner Auth callback/session boundary и защищённый `/admin` route через существующий `requireOwner` contract.
+3. Перенеси утверждённый catalog shell в локальные React/CSS components без CDN Tailwind, Google Fonts, Iconify или SortableJS.
+4. После protected shell реализуй полноэкранные `Add Track` и `Edit Track`, затем подключай upload/draft/preview/publish/unpublish/reorder/delete небольшими проверяемыми этапами.
 
-После моей конкретной инструкции прочитай `AGENTS.md`, `README.md`, `DESIGN.md`, `TASKS.md` и только релевантные документы/файлы. Не изменяй канонический прототип `design/prototypes/djey-music-mobile-player.html`. Не создавай cloud-ресурсы, не выполняй deployment и не push без отдельного явного разрешения.
+Соблюдай утверждённые границы: admin полностью на английском, White Neon по умолчанию, Dark Amber как единственная альтернативная тема, мобильная композиция остаётся центрированной на MacBook, draft metadata/media приватны, service-role key не попадает в browser code. Generic SaaS dashboard запрещён.
+
+Запускай только сфокусированные проверки после изменённого функционального этапа. Cloud Supabase/Vercel resources и deployment начинай только после готовности локального owner flow и проверки точных target/access данных; не меняй DNS и не создавай платные ресурсы без явного подтверждения.
