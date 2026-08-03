@@ -8,7 +8,7 @@ Before editing, read `README.md`, `DESIGN.md`, `TASKS.md`, `docs/`, the latest f
 
 The mobile player design is approved. The next stage is backend foundation and owner upload management. Do not restart visual exploration, redesign the player, or scaffold unrelated features.
 
-Repository: `git@github.com:byloftart/djey-music.git`; default working branch: `main`.
+Repository: `https://github.com/byloftart/djey-music.git`; default working branch: `main`.
 
 ## Binding decisions
 

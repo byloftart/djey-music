@@ -59,6 +59,7 @@ Before changing the project, read in this order:
 4. [`docs/architecture.md`](docs/architecture.md)
 5. [`docs/backend-foundation.md`](docs/backend-foundation.md)
 6. The latest file under [`docs/handoffs/`](docs/handoffs/)
+7. [`NEXT_DIALOG_PROMPT.md`](NEXT_DIALOG_PROMPT.md) when starting the backend dialog
 
 ## Current verification
 
