@@ -2,27 +2,20 @@ import "server-only";
 
 import type { User } from "@supabase/supabase-js";
 
-import { isOwnerEmailAllowed } from "@/lib/auth/owner-email";
+import {
+  authorizeOwnerIdentity,
+} from "@/lib/auth/owner-session";
 import { createClient } from "@/lib/supabase/server";
 
-export class OwnerAuthorizationError extends Error {
-  constructor() {
-    super("An allowlisted owner session is required.");
-    this.name = "OwnerAuthorizationError";
-  }
-}
+export { OwnerAuthorizationError } from "@/lib/auth/owner-session";
 
 export async function requireOwner(): Promise<User> {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
 
-  if (
-    error ||
-    !data.user ||
-    !isOwnerEmailAllowed(data.user.email, process.env.OWNER_EMAIL_ALLOWLIST)
-  ) {
-    throw new OwnerAuthorizationError();
-  }
-
-  return data.user;
+  return authorizeOwnerIdentity(
+    data.user,
+    error,
+    process.env.OWNER_EMAIL_ALLOWLIST,
+  );
 }

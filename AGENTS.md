@@ -2,13 +2,13 @@
 
 ## Low-overhead next-dialog entry
 
-At the saved approved-admin checkpoint, first run `git status --short --branch`, then read the latest file in `docs/handoffs/`, `docs/admin-panel.md`, and `docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`. Briefly acknowledge the exact checkpoint and begin the handoff's stated next implementation step. Do not start servers, installs, builds, broad test suites, Supabase reset, browser sweeps, audits, design generation, or deployment inspection merely to enter the dialog.
+At the saved owner-admin/player-integration checkpoint, first run `git status --short --branch`, then read the latest file in `docs/handoffs/`, `DESIGN.md`, and `TASKS.md`. Briefly acknowledge the exact checkpoint and begin the handoff's stated production-player integration step. Do not start servers, installs, builds, broad test suites, Supabase reset, browser sweeps, audits, design generation, or deployment inspection merely to enter the dialog.
 
-Before editing, read `README.md`, `DESIGN.md`, `TASKS.md`, and only the owner/auth/backend files relevant to the next step. Do not reread historical handoffs unless the latest handoff explicitly points to one. Do not restart catalog exploration; the owner-admin catalog is approved.
+Before editing, read `README.md`, the canonical player prototype, and only the public track/audio files relevant to the next step. Do not reread historical handoffs unless the latest handoff explicitly points to one. Do not restart player or catalog exploration; both approved designs are binding.
 
 ## Current stage
 
-The mobile player and mobile owner-admin catalog designs are approved, and the Next.js/Supabase backend foundation is implemented locally. The next stage is production owner authentication, the protected admin shell, and the Add/Edit track workflow. Do not restart player or catalog exploration, redesign either approved prototype, or scaffold unrelated features.
+The mobile player and owner-admin catalog/Add/Edit designs are approved. The local Next.js/Supabase owner Auth boundary, protected catalog, audio upload, publish/unpublish, reorder, and confirmed delete are implemented and saved. Published metadata and MP3 range reads work through public RLS, but `/` is still a placeholder and the approved player prototype still uses synthesized demo audio. The next stage is production React player integration with real published tracks, playback/seeking, and live visualization. Do not redesign the approved player or owner UI, and do not scaffold unrelated features.
 
 Repository: `https://github.com/byloftart/djey-music.git`; default working branch: `main`.
 
@@ -19,6 +19,8 @@ Repository: `https://github.com/byloftart/djey-music.git`; default working branc
 - Mobile-first; desktop adaptation is deferred.
 - Green Receiver is the default skin; White Neon and Dark Amber remain selectable.
 - Public listening never requires authentication.
+- The production player reads only published tracks in persisted `display_order`; drafts must never enter public UI or audio delivery.
+- Replace the prototype's synthesized demo with real audio while preserving its approved geometry, skins, and responsive behavior.
 - Only the allowlisted owner may upload or manage tracks.
 - Keep the first release a PWA. Do not add native apps.
 - No public uploads, comments, follows, messaging, payments, ads, or recommendation feed.

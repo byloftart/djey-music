@@ -1,6 +1,6 @@
 # DJey Music Owner Admin Design
 
-Status: approved catalog direction, 2026-08-03.
+Status: approved catalog and Add/Edit Track direction, 2026-08-03.
 
 ## Authority
 
@@ -12,6 +12,12 @@ Superdesign source:
 
 - Draft: `b3a7732f-f4cc-467e-aae8-d85a657bb9f0`
 - Preview: `https://p.superdesign.dev/draft/b3a7732f-f4cc-467e-aae8-d85a657bb9f0`
+- Project: `cae57f2a-0bf1-414a-a950-6fee44f440fe`
+
+The approved Add Track refinement is:
+
+- Draft: `80900b6b-caef-4974-81e3-a3978c6364a0`
+- Preview: `https://p.superdesign.dev/draft/80900b6b-caef-4974-81e3-a3978c6364a0`
 - Project: `cae57f2a-0bf1-414a-a950-6fee44f440fe`
 
 The prototype is a design and interaction reference, not production application code. Production must use local components and dependencies rather than runtime Tailwind, Google Fonts, Iconify, or SortableJS CDNs.
@@ -93,15 +99,20 @@ The approved player prototype at `design/prototypes/djey-music-mobile-player.htm
 
 `Add Track` opens a dedicated full-screen mobile editor for a new draft. `Edit` opens the same editor populated with the selected track. Do not use a cramped modal over the catalog.
 
-The editor is the next design and implementation surface and must include:
+The approved editor is intentionally sparse:
 
-1. `Track Details`: title, slug, description, genre, tags, duration, and rights notice.
-2. `Audio`: accepted MP3/AAC/WAV selection, configured size limit, client feedback, upload progress, cancel, retry, and partial-failure recovery.
-3. `Cover`: preview, replace, and remove. Covers remain supported even though catalog rows do not show them.
-4. `Publishing`: draft/published state, download permission, and display order.
-5. Actions: Save Draft, authorized Preview, Publish or Unpublish, Save Changes, and permanently Delete.
+1. The brand plaque shows only `DJey Music`, account, and theme controls. It has no `Add Track` or `Edit Track` subtitle.
+2. A compact row contains `Catalog` and an illuminated `NEW TRACK` or `EDIT TRACK` readout.
+3. One full-width tactile `UPLOAD TRACK` control appears before metadata. There is no `Audio` heading, nested picker card, visible extension list, or visible size-limit helper.
+4. Selecting audio derives Title from the filename, generates the hidden slug, and reads duration from metadata.
+5. `Track Details` uses Title + Genre, Tags + read-only Duration, then Description. Description is visually two lines. Fields have labels but no repeated placeholder copy.
+6. Duration uses the same inset field geometry as the adjacent fields and displays whole `mm:ss`, never raw seconds or decimals.
+7. The resting editor has no visible Slug, Cover, Rights Notice, Publishing, Status, Display Order, Preview, or Allow Download controls.
+8. The bottom raised block contains exactly two equal primary decisions for a new track: neutral `SAVE DRAFT` and accent `PUBLISH`.
+9. Edit retains the same compact fields, uses Save Changes plus Publish/Unpublish, and keeps a separate confirmed permanent Delete action below the main decisions.
+10. Upload validation, progress, cancellation, retryable errors, and partial-failure recovery appear only when active.
 
-Preview, Publish/Unpublish, and Delete live in the lower part of the full-screen editor rather than a catalog overflow menu. Permanent delete requires explicit confirmation and idempotent database/storage cleanup.
+Drafts remain visible only in the protected catalog. Public downloading is disabled at the trusted mutation boundary. Catalog order remains controlled by direct reorder rather than an editor field. Permanent delete requires explicit confirmation and idempotent database/storage cleanup.
 
 ## Functional architecture
 
@@ -109,7 +120,7 @@ Preview, Publish/Unpublish, and Delete live in the lower part of the full-screen
 - A protected owner route must call the existing trusted `requireOwner` boundary.
 - RLS and storage policies remain the final authorization layer.
 - Catalog data comes from `public.tracks` through an authenticated owner query.
-- Draft metadata, audio, and covers remain private.
+- Draft metadata and audio remain private. Any legacy/dormant cover objects also remain private.
 - Client-side validation improves feedback but does not replace trusted validation.
 - Privileged service-role credentials never enter a Client Component or browser bundle.
 
@@ -159,4 +170,5 @@ Recommended production boundaries:
 - Separate Filter or Reorder buttons in the bottom dock.
 - Permanent helper text explaining drag behavior.
 - A bottom dock absolutely overlaid on the catalog.
-
+- Add/Edit helper copy that repeats field labels or media formats and size limits.
+- Visible Slug, Cover, Rights Notice, Publishing, Status, Display Order, Preview, or Allow Download controls in the approved editor.

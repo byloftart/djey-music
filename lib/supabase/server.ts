@@ -24,8 +24,8 @@ export async function createClient() {
             cookieStore.set(name, value, options);
           });
         } catch {
-          // Server Components cannot write cookies. A future auth proxy will
-          // handle refreshes once the owner sign-in flow is implemented.
+          // Server Components cannot write cookies. The root session proxy
+          // persists refreshes on matching Auth and owner-admin requests.
         }
       },
     },

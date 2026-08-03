@@ -50,7 +50,7 @@ Skins are one component system driven by design tokens, not three independent im
 
 ## Artwork
 
-Album artwork is not the dominant element of the full player. Uploaded artwork remains available in the library cards, track detail/share metadata, Open Graph image, and owner preview. If no cover is uploaded, production should generate a branded deterministic placeholder from the track title/slug and skin-safe colors.
+Album artwork is not part of the approved owner-admin catalog or Add/Edit Track workflow. The first owner release uploads audio only and does not show a cover picker, preview, or placeholder. Any future track-detail/share/Open Graph treatment must be designed separately and must not silently restore cover UI to the approved admin surfaces.
 
 ## Deferred decisions
 
@@ -73,7 +73,7 @@ Direct owner-admin corrections approved on 2026-08-03 amend the theme relationsh
 - Every owner-admin label and message is English.
 - The admin remains a centered mobile composition even on wide laptop browsers; desktop adaptation remains deferred.
 
-The owner-admin catalog composition is approved. Its canonical reference is `design/prototypes/djey-music-owner-admin-catalog.html`, with the exact contract in `docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`. Production implementation may now begin without another catalog exploration round. The full-screen Add/Edit track surface is the next design and implementation surface.
+The owner-admin catalog and full-screen Add/Edit Track compositions are approved. Their exact contract is in `docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`. Production implementation must preserve the sparse audio-only editor without reopening catalog exploration.
 
 These items may be designed later without changing the approved mobile hierarchy.
 

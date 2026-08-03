@@ -6,7 +6,7 @@ GitHub repository: https://github.com/byloftart/djey-music (private at the curre
 
 ## Current status
 
-The mobile player and mobile owner-admin catalog designs were approved on 2026-08-03. A minimal Next.js 16 TypeScript/App Router application and the first local Supabase backend foundation exist. The foundation includes a versioned `tracks` migration, private audio/cover buckets, RLS for published-only public reads, an owner allowlist boundary, and pgTAP policy tests. No production admin UI, cloud Supabase project, or Vercel deployment exists yet.
+The mobile player, owner-admin catalog, and refined Add/Edit Track surfaces were approved on 2026-08-03. The local Next.js 16 application now includes the owner Auth/session boundary, protected `/admin` route, approved catalog shell, audio-only Add/Edit workflow, signed upload, filename-derived title/slug, detected `mm:ss` duration, draft/publish lifecycle, persisted reorder, and confirmed idempotent delete with storage cleanup. Public RLS and Storage range delivery are working, but `/` is still an under-construction placeholder and the approved player has not yet been converted from its synthesized standalone prototype to production React. No cloud Supabase project or Vercel deployment exists yet.
 
 Approved prototype: [`design/prototypes/djey-music-mobile-player.html`](design/prototypes/djey-music-mobile-player.html)
 
@@ -30,7 +30,7 @@ Then open `http://localhost:4173/djey-music-mobile-player.html` and use a mobile
 - Exact brand name: **DJey Music**.
 - Default skin: **Green Receiver**. Optional skins: **White Neon** and **Dark Amber**.
 - Skin choice is device-local and does not require backend persistence.
-- Cover artwork remains useful in the catalog, share previews, and track-detail metadata.
+- Cover artwork is not part of the approved owner-admin catalog or Add/Edit workflow; future share/metadata artwork requires a separate decision.
 
 See [`DESIGN.md`](DESIGN.md) for the canonical visual contract and rejected alternatives.
 
@@ -38,18 +38,27 @@ See [`DESIGN.md`](DESIGN.md) for the canonical visual contract and rejected alte
 
 - Next.js with TypeScript and App Router.
 - Supabase Postgres for track metadata.
-- Supabase Storage for audio and cover files.
+- Supabase Storage for private audio files; the existing private cover bucket remains dormant foundation compatibility and has no approved owner UI.
 - Supabase Auth for one allowlisted owner; no public registration.
 - Vercel for frontend and server-route deployment.
 - PWA manifest and service worker for installability and useful offline states.
 
 This is appropriate for the small catalog because it keeps the application, database, storage, authentication, and deployment workflow simple. Netlify is a viable frontend alternative, but offers no material advantage for the selected Next.js-first architecture. If audio bandwidth later grows substantially, move public audio delivery to an S3-compatible object store/CDN while retaining Supabase for metadata and owner authentication.
 
-## Backend phase
+## Owner admin and backend
 
-The local Supabase foundation described in [`docs/backend-foundation.md`](docs/backend-foundation.md) is implemented. The mobile catalog composition for the protected owner admin is approved and documented in [`docs/admin-panel.md`](docs/admin-panel.md) and [`docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`](docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md). The next phase begins with the owner Auth/session boundary and production admin shell, followed by the full-screen Add/Edit track workflow and validated media lifecycle.
+The local Supabase foundation described in [`docs/backend-foundation.md`](docs/backend-foundation.md) is implemented. The protected production owner admin follows [`docs/admin-panel.md`](docs/admin-panel.md) and [`docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`](docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md); both canonical prototypes remain unchanged.
 
 The owner admin is English-only, uses White Neon by default with Dark Amber as the sole alternate, and stays a centered mobile composition on wide browsers. Green Receiver remains part of the separate player contract.
+
+Local routes:
+
+- `/admin/sign-in`: owner-only login/password sign-in with no signup UI. The internal Supabase Auth email is resolved only on the server.
+- `/admin`: protected catalog with All Tracks, Published, and Drafts filters.
+- `/admin/tracks/new`: sparse audio-only Add Track workflow with Save Draft and Publish.
+- `/admin/tracks/<track-id>/edit`: the same compact metadata surface with Save Changes, Publish/Unpublish, and confirmed Delete.
+
+The root `proxy.ts` refreshes the Supabase session for `/admin` and `/auth`, while the protected owner layout performs a fresh server-side user and allowlist check. Trusted `/api/admin/*` handlers repeat that authorization boundary before mutations.
 
 Environment variable names are documented in [`.env.example`](.env.example). Real values must stay in local/Vercel environment configuration and must never be committed.
 
@@ -76,9 +85,22 @@ Fill `.env.local` with local or cloud values. Keep the existing variable names:
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: the local anon key or cloud publishable/legacy anon key; it is intentionally a browser-safe key and remains protected by RLS.
 - `SUPABASE_SERVICE_ROLE_KEY`: server-only key for future trusted lifecycle operations. Never prefix it with `NEXT_PUBLIC_` or import it into a Client Component.
 - `OWNER_EMAIL_ALLOWLIST`: comma-separated normalized owner email addresses, evaluated only at the trusted server boundary.
-- `MAX_AUDIO_UPLOAD_BYTES` and `MAX_COVER_UPLOAD_BYTES`: trusted upload limits. Configure matching or stricter bucket/project limits in Supabase.
+- `OWNER_LOGIN`: server-only short login accepted by the admin sign-in route.
+- `OWNER_LOGIN_EMAIL`: server-only Supabase Auth email mapped to that login. It must also be allowlisted and mapped in `private.owner_allowlist`.
+- `MAX_AUDIO_UPLOAD_BYTES`: trusted audio-upload limit. `MAX_COVER_UPLOAD_BYTES` remains only for the dormant compatibility boundary; the approved owner UI does not upload covers.
 
 The scaffold exposes a local health endpoint at `http://localhost:3000/api/health`.
+
+### iPhone access on the same Wi-Fi
+
+Bind Next.js to all interfaces and set the browser-facing app/Supabase URLs in ignored `.env.local` to the Mac's current LAN address:
+
+```bash
+ipconfig getifaddr en0
+npm run dev -- --hostname 0.0.0.0
+```
+
+For the current workstation lease, the owner admin is available at `http://192.168.1.2:3000/admin` and local Supabase at `http://192.168.1.2:54321`. The iPhone must be connected to the same Wi-Fi. `next.config.ts` derives `allowedDevOrigins` from `NEXT_PUBLIC_APP_URL` so the mobile browser can load and hydrate development scripts. If DHCP changes the Mac address, update `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_SUPABASE_URL` in `.env.local`, restart Next.js, and use the new address. Do not commit the machine-specific `.env.local` values.
 
 ## Local Supabase
 
@@ -96,7 +118,7 @@ Open Supabase Studio at `http://127.0.0.1:54323`. The local API is `http://127.0
 npx supabase status
 ```
 
-Public signup is disabled in [`supabase/config.toml`](supabase/config.toml). To bootstrap the owner locally:
+Public self-registration remains disabled by the global Auth setting in [`supabase/config.toml`](supabase/config.toml). The email/password provider itself stays enabled so an owner created through trusted admin controls can sign in. To bootstrap the owner locally:
 
 1. Open Supabase Studio.
 2. Click **Authentication** in the left sidebar, open **Users**, and create or invite the owner through the admin controls.
@@ -113,14 +135,22 @@ set email = excluded.email;
 
 The allowlist maps a stable Auth user UUID to the approved email. Browser code cannot read or change this table. Changing `OWNER_EMAIL_ALLOWLIST` alone does not grant database access; the trusted mapping is also required.
 
+At the saved local checkpoint, the owner continuity values are recorded only in ignored `.env.local` as `LOCAL_OWNER_EMAIL`, `LOCAL_OWNER_LOGIN`, and `LOCAL_OWNER_PASSWORD`. These continuity values must never be committed. The browser submits the short login to `/auth/sign-in`; the trusted route maps it to `OWNER_LOGIN_EMAIL` before calling Supabase Auth. The local owner is already mapped in `private.owner_allowlist`.
+
 The migration creates two private buckets:
 
 - `track-audio` with paths shaped like `tracks/<track-uuid>/audio/<normalized-file>`.
 - `track-covers` with paths shaped like `tracks/<track-uuid>/cover/<normalized-file>`.
 
+`track-covers` is retained as dormant backend compatibility. The approved catalog and Add/Edit Track UI do not expose cover artwork or cover operations.
+
 Anonymous and ordinary authenticated requests can select only objects referenced by published `tracks` rows. The allowlisted owner can read and mutate draft objects. The buckets intentionally inherit the Supabase project file-size ceiling; future upload endpoints must enforce `MAX_AUDIO_UPLOAD_BYTES` and `MAX_COVER_UPLOAD_BYTES` at the trusted boundary as well.
 
-The planned production delivery boundary is a server route that first resolves a `published` track through RLS, then creates a short-lived signed URL for that exact private object using the server-only key. This preserves draft privacy while giving the media element a normal URL that can be tested for HTTP range seeking. That route is not implemented in this foundation checkpoint; do not expose a direct public bucket or return signed draft URLs as a shortcut.
+A protected preview route remains available as a trusted backend primitive, but the approved Add/Edit surface intentionally has no Preview button. The next phase is production player delivery: resolve only a `published` track through public RLS, then return a short-lived URL for that exact object with range seeking intact. Do not expose either bucket publicly or return signed draft URLs from public routes.
+
+### Verified public-player backend checkpoint
+
+An anonymous local check on 2026-08-03 returned the published tracks `Kisses your back`, `Attention`, and `Equals` in persisted order. A signed byte-range read for every referenced MP3 returned `206 Partial Content`, `audio/mpeg`, and the requested `0-1023` bytes. This proves the metadata/privacy/storage foundation is ready; it does not mean the production player UI is connected yet.
 
 ## Verification
 
@@ -142,7 +172,7 @@ git diff --check
 
 `supabase:reset` destroys only the local Supabase database and rebuilds it from migrations and `supabase/seed.sql`. For a linked cloud project, do not rewrite an applied migration: create a new corrective migration, review a backup/rollback plan, and run `supabase db push` only after explicit authorization.
 
-The first migration and 24 pgTAP checks pass locally. Deployed range-request seeking remains unverified until a real storage project and deployment are explicitly authorized.
+The current migrations and 24 pgTAP checks pass locally. Node tests cover owner identity authorization, safe auth redirects, filename-derived editor metadata, `mm:ss` duration, forced-disabled public download, upload validation, and reorder behavior. Deployed range-request seeking remains unverified until a real storage project and deployment are explicitly authorized.
 
 ## Project continuity
 

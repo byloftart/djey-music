@@ -131,13 +131,21 @@ set local role anon;
 set local request.jwt.claims = '{"role":"anon"}';
 
 select results_eq(
-  $$select slug from public.tracks order by slug$$,
+  $$select slug from public.tracks
+    where id in (
+      '33333333-3333-4333-8333-333333333333',
+      '44444444-4444-4444-8444-444444444444'
+    )
+    order by slug$$,
   array['published-track'::text],
   'anonymous users can read only published tracks'
 );
 
 select results_eq(
-  $$select name from storage.objects order by name$$,
+  $$select name from storage.objects
+    where name like 'tracks/33333333-3333-4333-8333-333333333333/%'
+       or name like 'tracks/44444444-4444-4444-8444-444444444444/%'
+    order by name$$,
   array[
     'tracks/33333333-3333-4333-8333-333333333333/audio/master.mp3'::text,
     'tracks/33333333-3333-4333-8333-333333333333/cover/cover.jpg'::text
@@ -150,13 +158,21 @@ set local role authenticated;
 set local request.jwt.claims = '{"sub":"22222222-2222-4222-8222-222222222222","role":"authenticated"}';
 
 select results_eq(
-  $$select slug from public.tracks order by slug$$,
+  $$select slug from public.tracks
+    where id in (
+      '33333333-3333-4333-8333-333333333333',
+      '44444444-4444-4444-8444-444444444444'
+    )
+    order by slug$$,
   array['published-track'::text],
   'authenticated non-owners can read only published tracks'
 );
 
 select results_eq(
-  $$select name from storage.objects order by name$$,
+  $$select name from storage.objects
+    where name like 'tracks/33333333-3333-4333-8333-333333333333/%'
+       or name like 'tracks/44444444-4444-4444-8444-444444444444/%'
+    order by name$$,
   array[
     'tracks/33333333-3333-4333-8333-333333333333/audio/master.mp3'::text,
     'tracks/33333333-3333-4333-8333-333333333333/cover/cover.jpg'::text
@@ -203,13 +219,21 @@ set local role authenticated;
 set local request.jwt.claims = '{"sub":"11111111-1111-4111-8111-111111111111","role":"authenticated"}';
 
 select results_eq(
-  $$select slug from public.tracks order by slug$$,
+  $$select slug from public.tracks
+    where id in (
+      '33333333-3333-4333-8333-333333333333',
+      '44444444-4444-4444-8444-444444444444'
+    )
+    order by slug$$,
   array['draft-track'::text, 'published-track'::text],
   'owner can read draft and published tracks'
 );
 
 select results_eq(
-  $$select name from storage.objects order by name$$,
+  $$select name from storage.objects
+    where name like 'tracks/33333333-3333-4333-8333-333333333333/%'
+       or name like 'tracks/44444444-4444-4444-8444-444444444444/%'
+    order by name$$,
   array[
     'tracks/33333333-3333-4333-8333-333333333333/audio/master.mp3'::text,
     'tracks/33333333-3333-4333-8333-333333333333/cover/cover.jpg'::text,
