@@ -81,8 +81,11 @@ Release checkpoint: local typecheck, zero-warning lint, all 32 Node tests, produ
 - [x] Replace the public player's single audio element with two preloaded channels mixed through the shared analyser.
 - [x] Use a three-second equal-power crossfade for automatic advance and for Next, Previous, or playlist selection while playback is active; keep paused track changes direct.
 - [x] Preserve repeat-off/all/one, listener-local shuffle, persisted catalog order, the title-triggered playlist, the calibrated spectrum, and the authored-case marquee.
-- [ ] Verify owner preview for one published track and one draft track in an authenticated production admin session after deployment.
-- [ ] Verify an automatic near-end crossfade and a manual Next crossfade with real production audio after deployment.
+- [x] Verify authenticated production owner preview, Pause state, and one-at-a-time switching with published tracks.
+- [ ] Verify owner preview with a draft when the production catalog contains one; all seven current tracks are Published, and no catalog status was changed merely for testing.
+- [x] Verify a natural automatic advance and a manual Next overlap with real production audio after deployment.
+
+Release checkpoint: commits through `9eea762` are pushed to draft PR `#1`. Vercel production deployment `dpl_DyjMcKbdTxF38RPkjvNCyqsnJk43` is READY on the canonical aliases. The public player reports `PLAYING`, uses two audio channels, preloads the standby route, overlaps both channels during manual Next, settles after three seconds, and advances naturally to the next track without a gap. Authenticated `/admin` preview plays, pauses, and switches between published rows; anonymous preview returns `401`, guest `/admin` redirects to sign-in, and published range delivery remains `206 audio/mpeg`.
 
 Known dependency follow-up: `npm audit --omit=dev` currently reports three high-severity transitive advisories through the latest stable Next.js dependency tree (`postcss` and `sharp`). Do not run the suggested forced downgrade to Next.js 9; upgrade to the first compatible patched Next.js release and re-run the full gate.
 

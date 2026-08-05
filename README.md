@@ -6,14 +6,14 @@ GitHub repository: https://github.com/byloftart/djey-music (private at the curre
 
 ## Current status
 
-The mobile player, owner-admin catalog, and refined Add/Edit Track surfaces were approved on 2026-08-03. The Next.js 16 production application includes the complete owner flow plus the public player at `/`. The annotated player release keeps a mobile-only centered shell even on desktop, uses White Neon/Dark Amber, opens the published playlist by tapping the authored-case title marquee, and renders a clean full-height segmented spectrum without an inactive-cell background. The player queries only published tracks in persisted order, uses a track-bound signed audio route, connects real `<audio>` play/pause/seek and queue navigation, and drives the spectrum from Web Audio. Production metadata, protected owner access, and `206 Partial Content` delivery for all three MP3 files are verified.
+The mobile player, owner-admin catalog, and refined Add/Edit Track surfaces were approved on 2026-08-03. The Next.js 16 production application includes the complete owner flow plus the public player at `/`. The annotated player release keeps a mobile-only centered shell even on desktop, uses White Neon/Dark Amber, opens the published playlist by tapping the authored-case title marquee, and renders a clean full-height segmented spectrum without an inactive-cell background. The player queries only published tracks in persisted order, uses track-bound signed audio routes, and mixes two preloaded audio channels through the shared analyser for exact three-second equal-power crossfades. The owner catalog adds one protected Play/Pause preview action per row for Published and Draft media without changing Add/Edit. Production metadata, protected owner access, real continuous playback, and `206 Partial Content` delivery for the seven published MP3 files are verified.
 
 Production URLs:
 
 - Public player: `https://djey-music.vercel.app`
 - Owner management: `https://djey-music.vercel.app/admin`
 
-Annotated-player release `dpl_6MYwGgodR4rjP7YXi9eqwcuNnkQx` is READY. Live verification confirmed the centered mobile shell, both themes, title-triggered seven-track scrollable playlist, outside-tap dismissal, real `PLAYING` state/time progression, rhythmic full-height spectrum without an inactive-cell grid, guest admin redirect, and `206 audio/mpeg` range delivery for every published track route.
+Owner-preview and continuous-playback release `dpl_DyjMcKbdTxF38RPkjvNCyqsnJk43` is READY. Live verification confirmed the centered mobile shell, two hidden public audio channels, real `PLAYING` progression, manual three-second overlap, natural automatic advance, owner Play/Pause and one-at-a-time preview switching, guest admin protection, and `206 audio/mpeg` range delivery. The current production catalog contains seven Published tracks and no Draft track; live Draft-row preview remains the only feature-specific verification deferred until a draft exists.
 
 Approved prototype: [`design/prototypes/djey-music-mobile-player.html`](design/prototypes/djey-music-mobile-player.html)
 
@@ -153,7 +153,7 @@ The migration creates two private buckets:
 
 Anonymous and ordinary authenticated requests can select only objects referenced by published `tracks` rows. The allowlisted owner can read and mutate draft objects. The buckets intentionally inherit the Supabase project file-size ceiling; future upload endpoints must enforce `MAX_AUDIO_UPLOAD_BYTES` and `MAX_COVER_UPLOAD_BYTES` at the trusted boundary as well.
 
-A protected preview route remains available as a trusted backend primitive, but the approved Add/Edit surface intentionally has no Preview button. Public audio now resolves through `/api/tracks/<track-id>/audio`: the route repeats the `status = published` constraint before returning a one-hour signed redirect for that exact object. The bucket remains private, drafts do not receive public signed URLs, and byte-range seeking is preserved.
+A protected preview route serves the compact Play/Pause action in owner catalog rows while the approved Add/Edit surface intentionally has no Preview button. The route calls the owner boundary before selecting either Published or Draft metadata and returns a private no-store redirect to a short-lived signed object. Public audio resolves separately through `/api/tracks/<track-id>/audio`: that route repeats the `status = published` constraint before returning a one-hour signed redirect for the exact object. The bucket remains private, drafts do not receive public signed URLs, and byte-range seeking is preserved.
 
 ### Verified public-player backend checkpoint
 
@@ -179,7 +179,7 @@ git diff --check
 
 `supabase:reset` destroys only the local Supabase database and rebuilds it from migrations and `supabase/seed.sql`. For a linked cloud project, do not rewrite an applied migration: create a new corrective migration, review a backup/rollback plan, and run `supabase db push` only after explicit authorization.
 
-The current migrations and 24 pgTAP checks pass locally. Node tests cover owner identity authorization, safe auth redirects, filename-derived editor metadata, `mm:ss` duration, forced-disabled public download, upload validation, reorder behavior, public-player privacy mapping, player time, and queue wrapping. Production range-request seeking is verified for all three published tracks. Real audible playback, seek movement, ended advance, and live spectrum motion remain the final headed/mobile-browser verification.
+The current migrations and 24 pgTAP checks pass locally. The 41 Node tests cover owner identity authorization, safe auth redirects, admin preview boundary/state, filename-derived editor metadata, `mm:ss` duration, forced-disabled public download, upload validation, reorder behavior, public-player privacy mapping, player time, queue resolution, and equal-power curves. Production browser checks verify real playback, manual overlap, natural automatic advance, owner preview switching, and published range delivery. Representative physical iPhone/Android checks and live preview of a future Draft row remain pending in `TASKS.md`.
 
 ## Project continuity
 

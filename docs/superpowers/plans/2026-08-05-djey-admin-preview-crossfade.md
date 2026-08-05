@@ -130,11 +130,11 @@ Local browser note: the local public catalog request completed without tracks an
 
 - [x] **Step 1: Update design/tasks with the approved owner preview and crossfade contracts plus actual verification status**
 - [x] **Step 2: Rerun `npm run typecheck`, `npm run lint -- --max-warnings=0`, `npm test`, `npm run build`, and `git diff --check`**
-- [ ] **Step 3: Inspect the complete diff, stage only scoped files, commit, and push `codex/djey-player-redesign`**
-- [ ] **Step 4: Deploy the linked Vercel project to production and wait for `READY`**
-- [ ] **Step 5: Verify canonical and secondary aliases return `200`, guest `/admin` redirects, and published range delivery returns `206 audio/mpeg`**
+- [x] **Step 3: Inspect the complete diff, stage only scoped files, commit, and push `codex/djey-player-redesign`**
+- [x] **Step 4: Deploy the linked Vercel project to production and wait for `READY`**
+- [x] **Step 5: Verify canonical and secondary aliases return `200`, guest `/admin` redirects, and published range delivery returns `206 audio/mpeg`**
 - [ ] **Step 6: In a real browser, verify published and draft owner preview, automatic/manual three-second overlap, repeat/shuffle rules, state/timeline/spectrum synchronization, and zero public draft access**
-- [ ] **Step 7: Record the final commit, deployment ID, links, evidence, and any remaining real-device limitation in the handoff; push the documentation checkpoint**
+- [x] **Step 7: Record the final commit, deployment ID, links, evidence, and any remaining real-device limitation in the handoff; push the documentation checkpoint**
 
 ## Plan self-review
 

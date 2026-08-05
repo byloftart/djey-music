@@ -2,13 +2,13 @@
 
 ## Low-overhead next-dialog entry
 
-At the saved annotated-player release checkpoint, first run `git status --short --branch`, then read the latest file in `docs/handoffs/`, `DESIGN.md`, and `TASKS.md`. Briefly acknowledge the exact checkpoint and continue only the latest handoff's focused verification or direct user correction. Do not spend further credits in `LOFT Art`. Do not start installs, broad test suites, Supabase reset, browser sweeps, audits, deployment inspection, or unrelated design exploration merely to enter the dialog.
+At the saved owner-preview and continuous-crossfade release checkpoint, first run `git status --short --branch`, then read the latest file in `docs/handoffs/`, `DESIGN.md`, and `TASKS.md`. Briefly acknowledge the exact checkpoint and continue only the latest handoff's focused verification or direct user correction. Do not spend further credits in `LOFT Art`. Do not start installs, broad test suites, Supabase reset, browser sweeps, audits, deployment inspection, or unrelated design exploration merely to enter the dialog.
 
 Before player follow-up work, read `README.md`, the canonical player prototype, and only the current public-player component/CSS files needed for the correction. Do not reread historical handoffs unless the latest handoff explicitly points to one. Do not restart player or catalog exploration; the annotated two-theme player is now the baseline. Do not change the owner-admin flow or deploy again without direct authorization.
 
 ## Current stage
 
-The mobile player and owner-admin catalog/Add/Edit designs are approved and deployed. The public player is `https://djey-music.vercel.app`; management is at `/admin`. Production Supabase project `offfzskzypzkkdikbsap` contains the versioned schema, private media buckets, one allowlisted owner, and the published catalog. Live anonymous metadata, protected owner routing, real playback, and `206 Partial Content` delivery for every currently published MP3 are verified. The active annotated-player project is `DJey Music Public Player — Annotated Candidate` (`91f62f99-ad72-4130-9ac0-ab1cdb5a7f0b`) in workspace `Personal`; the final implementation reference is `DJey Music - Glass Playlist & Full Spectrum` (`606bee6e-3e73-481f-8ab0-32c31b5532ef`). The implementation is on `codex/djey-player-redesign`, draft PR `#1`; Vercel production deployment `dpl_6MYwGgodR4rjP7YXi9eqwcuNnkQx` is READY. Preserve the owner UI, draft privacy, public RLS, and track-bound audio delivery. Do not recreate the earlier rejected/deleted Personal direction or scaffold unrelated features.
+The mobile player and owner-admin catalog/Add/Edit designs are approved and deployed. The public player is `https://djey-music.vercel.app`; management is at `/admin`. Production Supabase project `offfzskzypzkkdikbsap` contains the versioned schema, private media buckets, one allowlisted owner, and the published catalog. Live anonymous metadata, protected owner routing, owner catalog Play/Pause preview, dual-channel three-second continuous playback, and `206 Partial Content` delivery for every currently published MP3 are verified. The active annotated-player project is `DJey Music Public Player — Annotated Candidate` (`91f62f99-ad72-4130-9ac0-ab1cdb5a7f0b`) in workspace `Personal`; the final implementation reference is `DJey Music - Glass Playlist & Full Spectrum` (`606bee6e-3e73-481f-8ab0-32c31b5532ef`). The implementation is on `codex/djey-player-redesign`, draft PR `#1`; Vercel production deployment `dpl_DyjMcKbdTxF38RPkjvNCyqsnJk43` is READY. Production currently has seven Published tracks and no Draft track, so the next real Draft row may be used for the remaining live draft-preview check without changing catalog status solely for testing. Preserve the owner UI, draft privacy, public RLS, and track-bound audio delivery. Do not recreate the earlier rejected/deleted Personal direction or scaffold unrelated features.
 
 Repository: `https://github.com/byloftart/djey-music.git`; default working branch: `main`.
 
@@ -21,6 +21,7 @@ Repository: `https://github.com/byloftart/djey-music.git`; default working branc
 - The top plaque has no playlist/Queue button. The active title marquee is the playlist trigger and expands the metadata LCD into a large translucent scrollable display above the transport.
 - Public listening never requires authentication.
 - The production player reads only published tracks in persisted `display_order`; drafts must never enter public UI or audio delivery.
+- Public playback uses two preloaded channels with an exact three-second equal-power crossfade for automatic advance and playing Next/Previous/playlist selection. Paused selection remains direct.
 - Replace the prototype's synthesized demo with real audio while preserving its approved geometry, two-theme token system, and responsive behavior.
 - Only the allowlisted owner may upload or manage tracks.
 - Keep the first release a PWA. Do not add native apps.
@@ -30,6 +31,7 @@ Repository: `https://github.com/byloftart/djey-music.git`; default working branc
 - Owner-admin UI is English-only. White Neon is its default theme; Dark Amber is its only alternate. The public player remains a separate UI contract but now uses the same two-theme relationship.
 - Canonical owner-admin catalog reference: `design/prototypes/djey-music-owner-admin-catalog.html` and `docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`.
 - The owner admin remains a centered mobile composition on wide browsers. Desktop adaptation is deferred.
+- Each owner catalog row has one owner-only Play/Pause preview action for Published and Draft media; only one preview plays at a time, and the Add/Edit surface remains unchanged.
 - Do not implement a generic SaaS dashboard. The catalog composition is approved; the full-screen Add/Edit surface must follow the approved contract and direct user corrections.
 
 ## Backend guardrails
