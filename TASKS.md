@@ -71,7 +71,8 @@ Release checkpoint: local typecheck, zero-warning lint, all 32 Node tests, produ
 - [x] Replace the over-amplified response with a calibrated noise floor, three-bin sampling, wider analyser range, lower glow, and faster smoothing so ordinary music does not stay at the ceiling while real peaks can still use the full display height.
 - [x] Restore the active authored-case title marquee without changing its title-triggered playlist behavior; preserve the stationary reduced-motion fallback.
 - [x] Run the focused regression tests and the complete local typecheck, zero-warning lint, 33-test suite, production build, and `git diff --check` gate.
-- [ ] After explicit authorization, deploy this correction and verify its real-audio rhythm response in the production player. The currently deployed release remains `dpl_6MYwGgodR4rjP7YXi9eqwcuNnkQx` until then.
+- [x] Publish commits `d595ee3` and `b030fcf` to the open draft PR and deploy the final correction as production deployment `dpl_z5Q7v2qP4hYVKe4ys61xS6Uw7c5K`.
+- [x] Verify the final production player with real audio: the paused spectrum has zero fixed rows, active columns move below the ceiling with softer glow, the authored-case marquee travels from beyond the right display edge fully beyond the left edge, playback reaches `PLAYING`, the audio route returns `206 audio/mpeg`, and guest `/admin` still redirects to sign-in.
 
 Known dependency follow-up: `npm audit --omit=dev` currently reports three high-severity transitive advisories through the latest stable Next.js dependency tree (`postcss` and `sharp`). Do not run the suggested forced downgrade to Next.js 9; upgrade to the first compatible patched Next.js release and re-run the full gate.
 

@@ -3,10 +3,10 @@
 - Created: 2026-08-05 14:50 +04
 - Project root: `/Users/iram/Documents/DJey Audio`
 - Branch: `codex/djey-player-redesign` tracking `origin/codex/djey-player-redesign`
-- Released implementation commit: `e7e49dd`
+- Released correction commits: `d595ee3`, `b030fcf`
 - Draft pull request: `https://github.com/byloftart/djey-music/pull/1`
 - Production player: `https://djey-music.vercel.app`
-- Production deployment still live: `dpl_6MYwGgodR4rjP7YXi9eqwcuNnkQx`
+- Production deployment: `dpl_z5Q7v2qP4hYVKe4ys61xS6Uw7c5K` (`READY`)
 
 ## Direct user correction
 
@@ -21,6 +21,8 @@ The local correction is intentionally narrow:
 - every real active title uses the existing masked authored-case marquee again, with a brief readable pause and a stationary reduced-motion fallback;
 - the title remains the playlist trigger and the playlist behavior is unchanged.
 
+Two direct post-deploy corrections were included before the final checkpoint. The marquee now uses the previously working full-mask path: 100% display-width leading space enters from beyond the right edge and the complete title exits beyond the left edge over 14 seconds. Spectrum colors and geometry remain unchanged, while active-segment alpha is reduced to `0.76` in White Neon and `0.84` in Dark Amber with a restrained `0.9` pixel-ratio glow.
+
 ## Verification
 
 - The focused tests were first observed failing for the old forced minimum and missing response helper, then passed after the correction.
@@ -30,13 +32,17 @@ The local correction is intentionally narrow:
 - `npm run build`: passed.
 - `git diff --check`: passed before this documentation checkpoint and must be rerun after it.
 - A local browser check with no playing track showed a completely clean spectrum area with no fixed bottom LED rows. The local catalog source returned no tracks, so live real-audio rhythm in this corrected build has not yet been browser-verified.
+- Final production browser verification confirmed `PLAYING`, advancing time, rhythmic below-ceiling LED heights, softer active-segment glow, and zero LEDs after pausing.
+- Browser geometry evidence confirmed the marquee text starts at/beyond the right mask boundary and later exits fully beyond the left boundary; its computed production animation is 14 seconds.
+- `https://djey-music.vercel.app` and `https://damirov.loftart.pro` return `200` from the final deployment.
+- The active track-bound audio route returns `206 audio/mpeg` for a 32-byte range request, and guest `/admin` still returns `307` to the sign-in route.
 
 ## Scope and release state
 
 Only `components/player/public-player.tsx`, `components/player/public-player.module.css`, `lib/tracks/public-player.ts`, their focused test, and checkpoint documentation are modified locally. Owner-admin, database queries, RLS, private media delivery, draft privacy, and deployment configuration are untouched.
 
-The correction is not committed, pushed, or deployed. Production still serves the prior released implementation. Do not deploy or merge without the user's explicit authorization.
+The correction is committed and pushed on `codex/djey-player-redesign`; draft PR `#1` points to `b030fcf`. Vercel production deployment `dpl_z5Q7v2qP4hYVKe4ys61xS6Uw7c5K` is READY and owns the canonical aliases. PR `#1` remains open and draft; it was not merged.
 
 ## Exact next action
 
-Wait for direct authorization to deploy. When authorized, rerun the full local gate, commit and push only the scoped correction, deploy to Vercel, then verify with real production audio that silence has zero rows, normal passages move rhythmically below the ceiling, genuine peaks can rise higher, and the title marquee is visible and still opens the playlist.
+Wait for direct user feedback on the final production player. For any further correction, preserve the current player geometry, two-theme system, title-triggered playlist, owner-admin flow, RLS, draft privacy, and track-bound media delivery. Do not merge PR `#1` without direct authorization.
