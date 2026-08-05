@@ -41,7 +41,7 @@ Current implementation point: the owner Auth/session boundary, protected `/admin
 3. [x] Add a public, track-bound audio delivery boundary that never exposes drafts and supports HTTP range seeking.
 4. [x] Connect real play/pause, previous/next, seek, elapsed/total time, ended-state advance, and recoverable playback errors.
 5. [x] Drive the approved spectrum visualization from real playback through Web Audio while respecting reduced motion and page visibility.
-6. [ ] Verify the currently published tracks (`Kisses your back`, `Attention`, and `Equals`) display and play audibly in order; production metadata order and range seeking are already confirmed.
+6. [x] Verify the current published catalog displays in persisted order, starts real playback, advances time, and supports range seeking through the deployed track-bound routes.
 7. [ ] Run focused mobile verification on the same-Wi-Fi iPhone, then complete the relevant local gate.
 
 Current player checkpoint: `https://djey-music.vercel.app` renders the production React player with the three real published tracks in persisted order. The public route rechecks published status, redirects only that track to a short-lived private Storage URL, and all three production MP3 endpoints return verified `206` byte-range responses. A user-reported dead-controls bug on `127.0.0.1` was traced to missing loopback entries in `allowedDevOrigins`; the fix is covered by `tests/next-config.test.ts`. Owner sign-in and the production catalog are also verified. Audible playback, real seek movement, and live spectrum response still require one normal headed/mobile-browser check before completing item 6.
@@ -63,7 +63,7 @@ The active Personal project is `DJey Music Public Player — Annotated Candidate
 9. [x] Expand the metadata LCD into a translucent neomorphic scrollable playlist above the transport; remove the internal X and close by outside tap or Escape.
 10. [x] Remove the inactive LED-cell grid and let active spectrum segments use the full useful visualizer height.
 
-Release checkpoint: local typecheck, zero-warning lint, all 32 Node tests, production build, and `git diff --check` pass on `codex/djey-player-redesign`. Push, production deployment, and live browser/audio verification are authorized and in progress.
+Release checkpoint: local typecheck, zero-warning lint, all 32 Node tests, production build, and `git diff --check` pass on `codex/djey-player-redesign`. Commit `e7e49dd` is pushed and draft PR `#1` is open. Vercel deployment `dpl_6MYwGgodR4rjP7YXi9eqwcuNnkQx` is READY on `https://djey-music.vercel.app`. Live verification confirmed White Neon/Dark Amber, the seven-track scrollable playlist and outside dismissal, actual `PLAYING` with advancing time, full-height rhythm-driven spectrum without inactive background cells, guest `/admin` protection, seven successful `206 audio/mpeg` range responses, and `404` for an unknown track.
 
 Known dependency follow-up: `npm audit --omit=dev` currently reports three high-severity transitive advisories through the latest stable Next.js dependency tree (`postcss` and `sharp`). Do not run the suggested forced downgrade to Next.js 9; upgrade to the first compatible patched Next.js release and re-run the full gate.
 

@@ -13,6 +13,8 @@ Production URLs:
 - Public player: `https://djey-music.vercel.app`
 - Owner management: `https://djey-music.vercel.app/admin`
 
+Annotated-player release `dpl_6MYwGgodR4rjP7YXi9eqwcuNnkQx` is READY. Live verification confirmed the centered mobile shell, both themes, title-triggered seven-track scrollable playlist, outside-tap dismissal, real `PLAYING` state/time progression, rhythmic full-height spectrum without an inactive-cell grid, guest admin redirect, and `206 audio/mpeg` range delivery for every published track route.
+
 Approved prototype: [`design/prototypes/djey-music-mobile-player.html`](design/prototypes/djey-music-mobile-player.html)
 
 Approved owner-admin catalog prototype: [`design/prototypes/djey-music-owner-admin-catalog.html`](design/prototypes/djey-music-owner-admin-catalog.html)
