@@ -312,15 +312,15 @@
 
 .marquee {
   max-width: none;
-  padding-left: 100%;
+  padding-right: 26px;
   overflow: visible;
   text-overflow: clip;
-  animation: marquee 14s linear infinite;
+  animation: marquee 12s linear infinite;
 }
 
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
+  0%, 12% { transform: translateX(0); }
+  88%, 100% { transform: translateX(calc(-100% - 26px)); }
 }
 
 .detailLabels,

@@ -48,6 +48,8 @@ Direct playlist interaction correction approved for design exploration on 2026-0
 - The metadata display has a restrained inner/outer glow matching the active skin.
 - Motion and live visualization must respect `prefers-reduced-motion` and stop unnecessary animation when paused or hidden in production.
 - The segmented spectrum draws only active rectangular LEDs. There is no faint inactive-cell grid behind it. Active columns can use the full useful height between an equal top inset and the baseline above the frequency labels.
+- Silence and pauses draw zero LEDs: there is no forced minimum row. Normal musical energy must remain below the ceiling, while genuine peaks may use the full useful height; analyser range and smoothing should preserve clearly rhythmic movement without artificial maximum-brightness amplification.
+- The active authored-case title remains a masked running marquee and the playlist trigger. It pauses briefly at the readable starting position before moving; `prefers-reduced-motion` keeps it stationary.
 - The transport is one centered tactile group: slightly larger previous/play/next buttons use fixed symmetric gaps rather than spreading to the panel edges.
 
 ## Themes

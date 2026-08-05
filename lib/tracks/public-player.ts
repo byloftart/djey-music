@@ -99,9 +99,20 @@ export function getSpectrumSegmentCount(
   intensity: number,
   maximumSegments: number,
 ): number {
-  const safeMaximum = Math.max(2, Math.floor(maximumSegments));
+  const safeMaximum = Math.max(1, Math.floor(maximumSegments));
   const safeIntensity = Number.isFinite(intensity)
     ? Math.min(1, Math.max(0, intensity))
     : 0;
-  return Math.round(2 + safeIntensity * (safeMaximum - 2));
+  return Math.round(safeIntensity * safeMaximum);
+}
+
+export function getSpectrumIntensity(rawValue: number): number {
+  const safeValue = Number.isFinite(rawValue)
+    ? Math.min(1, Math.max(0, rawValue))
+    : 0;
+  const noiseFloor = 0.06;
+  if (safeValue <= noiseFloor) return 0;
+
+  const normalized = (safeValue - noiseFloor) / (1 - noiseFloor);
+  return Math.pow(normalized, 1.15);
 }

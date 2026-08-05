@@ -65,6 +65,14 @@ The active Personal project is `DJey Music Public Player — Annotated Candidate
 
 Release checkpoint: local typecheck, zero-warning lint, all 32 Node tests, production build, and `git diff --check` pass on `codex/djey-player-redesign`. Commit `e7e49dd` is pushed and draft PR `#1` is open. Vercel deployment `dpl_6MYwGgodR4rjP7YXi9eqwcuNnkQx` is READY on `https://djey-music.vercel.app`. Live verification confirmed White Neon/Dark Amber, the seven-track scrollable playlist and outside dismissal, actual `PLAYING` with advancing time, full-height rhythm-driven spectrum without inactive background cells, guest `/admin` protection, seven successful `206 audio/mpeg` range responses, and `404` for an unknown track.
 
+### Direct spectrum and marquee correction: 2026-08-05
+
+- [x] Remove the forced two-row spectrum minimum so silence and paused playback draw no static LEDs.
+- [x] Replace the over-amplified response with a calibrated noise floor, three-bin sampling, wider analyser range, lower glow, and faster smoothing so ordinary music does not stay at the ceiling while real peaks can still use the full display height.
+- [x] Restore the active authored-case title marquee without changing its title-triggered playlist behavior; preserve the stationary reduced-motion fallback.
+- [x] Run the focused regression tests and the complete local typecheck, zero-warning lint, 33-test suite, production build, and `git diff --check` gate.
+- [ ] After explicit authorization, deploy this correction and verify its real-audio rhythm response in the production player. The currently deployed release remains `dpl_6MYwGgodR4rjP7YXi9eqwcuNnkQx` until then.
+
 Known dependency follow-up: `npm audit --omit=dev` currently reports three high-severity transitive advisories through the latest stable Next.js dependency tree (`postcss` and `sharp`). Do not run the suggested forced downgrade to Next.js 9; upgrade to the first compatible patched Next.js release and re-run the full gate.
 
 ## Later phases and hardening

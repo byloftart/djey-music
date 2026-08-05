@@ -6,6 +6,7 @@ import {
   formatPlayerTime,
   getAdjacentTrackIndex,
   getSpectrumColumnColor,
+  getSpectrumIntensity,
   getSpectrumSegmentCount,
   type PublicPlayerTrack,
 } from "@/lib/tracks/public-player";
@@ -74,13 +75,10 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
   const resumeAfterTrackChangeRef = useRef(false);
   const playlistRef = useRef<HTMLDivElement>(null);
   const titleTriggerRef = useRef<HTMLButtonElement>(null);
-  const titleFrameRef = useRef<HTMLSpanElement>(null);
-  const titleTextRef = useRef<HTMLSpanElement>(null);
   const [theme, setTheme] = useState<PlayerTheme>("white");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
-  const [isTitleOverflowing, setIsTitleOverflowing] = useState(false);
   const [repeatMode, setRepeatMode] = useState<RepeatMode>("off");
   const [shuffleEnabled, setShuffleEnabled] = useState(false);
   const [playerState, setPlayerState] = useState(
@@ -104,24 +102,6 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
       if (frameId !== null) window.cancelAnimationFrame(frameId);
     };
   }, []);
-
-  useEffect(() => {
-    const frame = titleFrameRef.current;
-    const text = titleTextRef.current;
-    if (!frame || !text) return;
-
-    const measure = () => {
-      setIsTitleOverflowing(text.scrollWidth > frame.clientWidth + 2);
-    };
-    const frameId = window.requestAnimationFrame(measure);
-    const observer = new ResizeObserver(measure);
-    observer.observe(frame);
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-      observer.disconnect();
-    };
-  }, [track?.title]);
 
   useEffect(() => {
     if (!isPlaylistOpen) return;
@@ -198,10 +178,14 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
         const frequencyIndex = Math.floor(
           2 + Math.pow(index / SPECTRUM_COLUMNS, 0.72) * 145,
         );
-        const idleIntensity = 0.08 + ((index * 17) % 13) / 100;
+        const previousValue = frequencyData[Math.max(0, frequencyIndex - 1)];
+        const centerValue = frequencyData[frequencyIndex];
+        const nextValue = frequencyData[Math.min(frequencyData.length - 1, frequencyIndex + 1)];
+        const rawIntensity =
+          (previousValue * 0.2 + centerValue * 0.6 + nextValue * 0.2) / 255;
         const intensity = isPlaying && analyser
-          ? Math.min(1, Math.pow(frequencyData[frequencyIndex] / 255, 0.72) * 1.24)
-          : idleIntensity;
+          ? getSpectrumIntensity(rawIntensity)
+          : 0;
         const activeSegments = getSpectrumSegmentCount(
           intensity,
           SPECTRUM_SEGMENTS,
@@ -211,10 +195,10 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
 
         for (let segment = 0; segment < activeSegments; segment += 1) {
           const y = baseline - (segment + 1) * segmentHeight - segment * segmentGap;
-          context.globalAlpha = 1;
+          context.globalAlpha = theme === "amber" ? 0.94 : 0.88;
           context.fillStyle = color;
           context.shadowColor = color;
-          context.shadowBlur = 3.6 * pixelRatio;
+          context.shadowBlur = 1.45 * pixelRatio;
           context.fillRect(x, y, columnWidth, segmentHeight);
         }
       }
@@ -289,7 +273,9 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
       audioContext = new AudioContext();
       const analyser = audioContext.createAnalyser();
       analyser.fftSize = 512;
-      analyser.smoothingTimeConstant = 0.88;
+      analyser.minDecibels = -90;
+      analyser.maxDecibels = -8;
+      analyser.smoothingTimeConstant = 0.76;
       const mediaSource = audioContext.createMediaElementSource(audio);
       mediaSource.connect(analyser);
       analyser.connect(audioContext.destination);
@@ -428,10 +414,9 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
             disabled={!track}
             onClick={() => setIsPlaylistOpen(true)}
           >
-            <span ref={titleFrameRef} className={styles.titleMask}>
+            <span className={styles.titleMask}>
               <span
-                ref={titleTextRef}
-                className={`${styles.titleText} ${isTitleOverflowing ? styles.marquee : ""}`}
+                className={`${styles.titleText} ${track ? styles.marquee : ""}`}
               >
                 {track?.title ?? "DJey Music"}
               </span>

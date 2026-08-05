@@ -6,6 +6,7 @@ import {
   formatPlayerTime,
   getAdjacentTrackIndex,
   getSpectrumColumnColor,
+  getSpectrumIntensity,
   getSpectrumSegmentCount,
 } from "../lib/tracks/public-player";
 
@@ -108,8 +109,20 @@ test("spectrum colors interpolate smoothly from emerald to light orange", () => 
   }
 });
 
-test("spectrum intensity can illuminate the full available LED height", () => {
-  assert.equal(getSpectrumSegmentCount(0, 25), 2);
+test("silent spectrum has no fixed LED rows but real peaks retain the full range", () => {
+  assert.equal(getSpectrumSegmentCount(0, 25), 0);
   assert.equal(getSpectrumSegmentCount(1, 25), 25);
-  assert.equal(getSpectrumSegmentCount(0.5, 25), 14);
+  assert.equal(getSpectrumSegmentCount(0.5, 25), 13);
+});
+
+test("spectrum response follows musical energy without boosting normal audio to the ceiling", () => {
+  assert.equal(getSpectrumIntensity(0), 0);
+  assert.equal(getSpectrumIntensity(0.06), 0);
+
+  const normal = getSpectrumIntensity(0.5);
+  const loud = getSpectrumIntensity(0.8);
+
+  assert.ok(normal > 0.3 && normal < 0.55);
+  assert.ok(loud > normal && loud < 0.9);
+  assert.equal(getSpectrumIntensity(1), 1);
 });
