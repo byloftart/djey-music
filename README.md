@@ -6,7 +6,12 @@ GitHub repository: https://github.com/byloftart/djey-music (private at the curre
 
 ## Current status
 
-The mobile player, owner-admin catalog, and refined Add/Edit Track surfaces were approved on 2026-08-03. The local Next.js 16 application now includes the owner Auth/session boundary, protected `/admin` route, approved catalog shell, audio-only Add/Edit workflow, signed upload, filename-derived title/slug, detected `mm:ss` duration, draft/publish lifecycle, persisted reorder, and confirmed idempotent delete with storage cleanup. Public RLS and Storage range delivery are working, but `/` is still an under-construction placeholder and the approved player has not yet been converted from its synthesized standalone prototype to production React. No cloud Supabase project or Vercel deployment exists yet.
+The mobile player, owner-admin catalog, and refined Add/Edit Track surfaces were approved on 2026-08-03. The Next.js 16 production application includes the complete owner flow plus the public player at `/`. The annotated player release keeps a mobile-only centered shell even on desktop, uses White Neon/Dark Amber, opens the published playlist by tapping the authored-case title marquee, and renders a clean full-height segmented spectrum without an inactive-cell background. The player queries only published tracks in persisted order, uses a track-bound signed audio route, connects real `<audio>` play/pause/seek and queue navigation, and drives the spectrum from Web Audio. Production metadata, protected owner access, and `206 Partial Content` delivery for all three MP3 files are verified.
+
+Production URLs:
+
+- Public player: `https://djey-music.vercel.app`
+- Owner management: `https://djey-music.vercel.app/admin`
 
 Approved prototype: [`design/prototypes/djey-music-mobile-player.html`](design/prototypes/djey-music-mobile-player.html)
 
@@ -28,8 +33,8 @@ Then open `http://localhost:4173/djey-music-mobile-player.html` and use a mobile
 - Mobile is the primary experience. Desktop adaptation is deferred until the mobile product is implemented.
 - The full player does not use album artwork as its dominant element. The upper module is a live spectrum visualizer; the lower illuminated display presents track metadata.
 - Exact brand name: **DJey Music**.
-- Default skin: **Green Receiver**. Optional skins: **White Neon** and **Dark Amber**.
-- Skin choice is device-local and does not require backend persistence.
+- The approved redesign target uses **White Neon** by default and **Dark Amber** as the sole alternate. Green Receiver is removed from the public player.
+- A direct day/night control switches the two themes; the choice is device-local and does not require backend persistence.
 - Cover artwork is not part of the approved owner-admin catalog or Add/Edit workflow; future share/metadata artwork requires a separate decision.
 
 See [`DESIGN.md`](DESIGN.md) for the canonical visual contract and rejected alternatives.
@@ -49,7 +54,7 @@ This is appropriate for the small catalog because it keeps the application, data
 
 The local Supabase foundation described in [`docs/backend-foundation.md`](docs/backend-foundation.md) is implemented. The protected production owner admin follows [`docs/admin-panel.md`](docs/admin-panel.md) and [`docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`](docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md); both canonical prototypes remain unchanged.
 
-The owner admin is English-only, uses White Neon by default with Dark Amber as the sole alternate, and stays a centered mobile composition on wide browsers. Green Receiver remains part of the separate player contract.
+The owner admin is English-only, uses White Neon by default with Dark Amber as the sole alternate, and stays a centered mobile composition on wide browsers. The public-player redesign now uses the same two-theme relationship while retaining its separate player geometry and behavior.
 
 Local routes:
 
@@ -100,7 +105,7 @@ ipconfig getifaddr en0
 npm run dev -- --hostname 0.0.0.0
 ```
 
-For the current workstation lease, the owner admin is available at `http://192.168.1.2:3000/admin` and local Supabase at `http://192.168.1.2:54321`. The iPhone must be connected to the same Wi-Fi. `next.config.ts` derives `allowedDevOrigins` from `NEXT_PUBLIC_APP_URL` so the mobile browser can load and hydrate development scripts. If DHCP changes the Mac address, update `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_SUPABASE_URL` in `.env.local`, restart Next.js, and use the new address. Do not commit the machine-specific `.env.local` values.
+For the current workstation lease, the owner admin is available at `http://192.168.1.2:3000/admin` and local Supabase at `http://192.168.1.2:54321`. The iPhone must be connected to the same Wi-Fi. `next.config.ts` allows `localhost`, `127.0.0.1`, and the host derived from `NEXT_PUBLIC_APP_URL` so both Mac-local and same-Wi-Fi browsers can hydrate development scripts. If DHCP changes the Mac address, update `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_SUPABASE_URL` in `.env.local`, restart Next.js, and use the new address. Do not commit the machine-specific `.env.local` values.
 
 ## Local Supabase
 
@@ -146,11 +151,11 @@ The migration creates two private buckets:
 
 Anonymous and ordinary authenticated requests can select only objects referenced by published `tracks` rows. The allowlisted owner can read and mutate draft objects. The buckets intentionally inherit the Supabase project file-size ceiling; future upload endpoints must enforce `MAX_AUDIO_UPLOAD_BYTES` and `MAX_COVER_UPLOAD_BYTES` at the trusted boundary as well.
 
-A protected preview route remains available as a trusted backend primitive, but the approved Add/Edit surface intentionally has no Preview button. The next phase is production player delivery: resolve only a `published` track through public RLS, then return a short-lived URL for that exact object with range seeking intact. Do not expose either bucket publicly or return signed draft URLs from public routes.
+A protected preview route remains available as a trusted backend primitive, but the approved Add/Edit surface intentionally has no Preview button. Public audio now resolves through `/api/tracks/<track-id>/audio`: the route repeats the `status = published` constraint before returning a one-hour signed redirect for that exact object. The bucket remains private, drafts do not receive public signed URLs, and byte-range seeking is preserved.
 
 ### Verified public-player backend checkpoint
 
-An anonymous local check on 2026-08-03 returned the published tracks `Kisses your back`, `Attention`, and `Equals` in persisted order. A signed byte-range read for every referenced MP3 returned `206 Partial Content`, `audio/mpeg`, and the requested `0-1023` bytes. This proves the metadata/privacy/storage foundation is ready; it does not mean the production player UI is connected yet.
+Production Supabase project `offfzskzypzkkdikbsap` contains the published tracks `Kisses your back`, `Attention`, and `Equals` in persisted order. On 2026-08-04 the live `/` rendered all three titles, owner authentication returned the protected three-track catalog, and every track-bound audio route returned `307` to private Storage followed by `206 Partial Content`, `audio/mpeg`, and the requested byte range. A prior Chrome DevTools smoke exposed and fixed a development-only hydration failure on `127.0.0.1`: local loopback origins were missing from `allowedDevOrigins`. Theme switching and previous/next metadata changes work without hydration errors. Audible playback still requires a normal headed/mobile-browser check because headless Chrome did not advance its media pipeline.
 
 ## Verification
 
@@ -172,7 +177,7 @@ git diff --check
 
 `supabase:reset` destroys only the local Supabase database and rebuilds it from migrations and `supabase/seed.sql`. For a linked cloud project, do not rewrite an applied migration: create a new corrective migration, review a backup/rollback plan, and run `supabase db push` only after explicit authorization.
 
-The current migrations and 24 pgTAP checks pass locally. Node tests cover owner identity authorization, safe auth redirects, filename-derived editor metadata, `mm:ss` duration, forced-disabled public download, upload validation, and reorder behavior. Deployed range-request seeking remains unverified until a real storage project and deployment are explicitly authorized.
+The current migrations and 24 pgTAP checks pass locally. Node tests cover owner identity authorization, safe auth redirects, filename-derived editor metadata, `mm:ss` duration, forced-disabled public download, upload validation, reorder behavior, public-player privacy mapping, player time, and queue wrapping. Production range-request seeking is verified for all three published tracks. Real audible playback, seek movement, ended advance, and live spectrum motion remain the final headed/mobile-browser verification.
 
 ## Project continuity
 
@@ -196,4 +201,4 @@ perl -0777 -ne 'if (/<script>(.*?)<\/script>/s) { print $1 }' design/prototypes/
 git diff --check
 ```
 
-The prototype remains a preserved design artifact; the production player conversion is a later phase.
+The prototype remains a preserved design artifact; production code lives separately under `components/player/`.

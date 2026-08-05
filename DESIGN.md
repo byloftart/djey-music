@@ -14,7 +14,7 @@ The approved interactive reference is:
 
 `design/prototypes/djey-music-mobile-player.html`
 
-It defines the current mobile geometry, visual hierarchy, three color skins, synthesized test playback, and spectrum response. It is a design prototype, not production application code.
+It defines the current mobile geometry, visual hierarchy, synthesized test playback, and spectrum response. Direct corrections from 2026-08-04 supersede its three-skin selector: the redesign keeps only White Neon and Dark Amber. It is a design prototype, not production application code.
 
 ## Settled mobile hierarchy
 
@@ -26,9 +26,17 @@ From top to bottom:
 4. Illuminated metadata display with state, queue position, title, authors, format, genre, year, sample rate, and source/master label.
 5. Seek progress and elapsed/total time.
 6. Tactile previous, play/pause, and next controls.
-7. Three centered temporary skin selectors inside the control block. Their final product location may change later.
+7. One direct day/night control in the top plaque; there are no theme swatches inside the transport block.
 
 The player fills the mobile viewport using dynamic viewport units and iPhone safe-area insets. On narrow screens, external page headings disappear and the player becomes the full screen.
+
+Direct playlist interaction correction approved for design exploration on 2026-08-04:
+
+- There is no playlist or Queue button in the top plaque; the left side stays clean while the brand remains optically centered.
+- The active title marquee inside the metadata LCD is the playlist trigger.
+- Tapping the title visually expands that same LCD into a large translucent glass/display surface below the plaque and above the transport, overlaying the spectrum and timeline without reflowing the player.
+- The expanded display contains a scrollable published-track list with authored-case title, duration, and a Play/Pause control for each row. Closing it restores the normal metadata LCD and marquee.
+- The expanded playlist is a bright neutral translucent LCD-glass surface in both themes with raised outer depth, an inset list well, and clearly separated full-width rows. It has no internal X button; tapping outside the surface or pressing Escape closes it.
 
 ## Visual rules
 
@@ -39,14 +47,16 @@ The player fills the mobile viewport using dynamic viewport units and iPhone saf
 - Metadata text must remain readable at phone size; do not return to tiny decorative labels.
 - The metadata display has a restrained inner/outer glow matching the active skin.
 - Motion and live visualization must respect `prefers-reduced-motion` and stop unnecessary animation when paused or hidden in production.
+- The segmented spectrum draws only active rectangular LEDs. There is no faint inactive-cell grid behind it. Active columns can use the full useful height between an equal top inset and the baseline above the frequency labels.
+- The transport is one centered tactile group: slightly larger previous/play/next buttons use fixed symmetric gaps rather than spreading to the panel edges.
 
-## Skins
+## Themes
 
-- **Green Receiver** is the default: warm light shell, dark green spectrum surface, fluorescent green spectrum, green metadata glow.
-- **White Neon** is optional: cool light shell, cyan/blue spectrum, subtle blue metadata glow.
-- **Dark Amber** is optional: graphite/brown-black shell, orange/amber spectrum and metadata illumination.
+- **White Neon** is the default public-player theme: cool light shell with a restrained blue metadata glow.
+- **Dark Amber** is the only alternate: graphite/brown-black shell with orange/amber metadata illumination.
+- **Green Receiver** is removed from the public player and must not remain as a visible, hidden, persisted, or fallback option.
 
-Skins are one component system driven by design tokens, not three independent implementations. Store the listener's choice locally on the device. No account or database field is needed.
+The two themes are one component system driven by design tokens, not independent implementations. A single moon/sun control switches them directly. Store the listener's choice locally on the device; no account or database field is needed.
 
 ## Artwork
 
@@ -54,7 +64,7 @@ Album artwork is not part of the approved owner-admin catalog or Add/Edit Track 
 
 ## Deferred decisions
 
-- Exact actions and final placement for menu, favorite, share, download, queue, and overflow controls.
+- Exact actions and final placement for share, download, and overflow controls. The playlist and day/night controls are no longer deferred.
 - Desktop composition and density.
 - Final typeface and production icon set.
 - Exact visualization performance budget after implementation profiling.
@@ -69,7 +79,7 @@ Direct owner-admin corrections approved on 2026-08-03 amend the theme relationsh
 
 - White Neon is the default owner-admin theme.
 - Dark Amber is its only alternate theme through one light/dark control.
-- Green Receiver remains part of the player contract but is removed from the owner admin.
+- Green Receiver is removed from both the current public-player redesign and the owner admin.
 - Every owner-admin label and message is English.
 - The admin remains a centered mobile composition even on wide laptop browsers; desktop adaptation remains deferred.
 
