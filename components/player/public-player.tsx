@@ -195,10 +195,10 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
 
         for (let segment = 0; segment < activeSegments; segment += 1) {
           const y = baseline - (segment + 1) * segmentHeight - segment * segmentGap;
-          context.globalAlpha = theme === "amber" ? 0.94 : 0.88;
+          context.globalAlpha = theme === "amber" ? 0.84 : 0.76;
           context.fillStyle = color;
           context.shadowColor = color;
-          context.shadowBlur = 1.45 * pixelRatio;
+          context.shadowBlur = 0.9 * pixelRatio;
           context.fillRect(x, y, columnWidth, segmentHeight);
         }
       }
