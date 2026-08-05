@@ -43,7 +43,7 @@ The page still queries only `status = published` and orders by stored `display_o
 
 ## Working tree note
 
-`.superdesign/` is intentionally untracked and contains local design-system/init context plus ignored temporary draft exports. Do not commit it as application source. No secret values belong in Git.
+`.superdesign/` is intentionally ignored and contains local design-system/init context plus temporary draft exports. Do not commit it as application source. No secret values belong in Git.
 
 ## Exact next action
 
