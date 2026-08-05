@@ -321,6 +321,10 @@ export function AdminCatalog({ initialTracks, loadError }: AdminCatalogProps) {
           setPreviewPlaying(true);
           setPreviewLoadingId(undefined);
         }}
+        onPlaying={() => {
+          setPreviewPlaying(true);
+          setPreviewLoadingId(undefined);
+        }}
         onWaiting={() => {
           if (previewTrackId) setPreviewLoadingId(previewTrackId);
         }}
