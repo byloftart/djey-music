@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 
 import {
   formatPlayerTime,
-  getAdjacentTrackIndex,
   getSpectrumColumnColor,
   getSpectrumIntensity,
   getSpectrumSegmentCount,
@@ -12,6 +11,7 @@ import {
 } from "@/lib/tracks/public-player";
 
 import styles from "./public-player.module.css";
+import { useContinuousPlayer } from "./use-continuous-player";
 
 type PlayerTheme = "white" | "amber";
 type RepeatMode = "off" | "all" | "one";
@@ -66,26 +66,34 @@ function ShuffleIcon() {
 }
 
 export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
-  const audioRef = useRef<HTMLAudioElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const mediaSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
-  const resumeAfterTrackChangeRef = useRef(false);
   const playlistRef = useRef<HTMLDivElement>(null);
   const titleTriggerRef = useRef<HTMLButtonElement>(null);
   const [theme, setTheme] = useState<PlayerTheme>("white");
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
   const [repeatMode, setRepeatMode] = useState<RepeatMode>("off");
   const [shuffleEnabled, setShuffleEnabled] = useState(false);
-  const [playerState, setPlayerState] = useState(
-    loadError ? "ERROR" : initialTracks.length > 0 ? "READY" : "NO TRACKS",
-  );
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(initialTracks[0]?.durationSeconds ?? 0);
+  const {
+    analyserRef,
+    audioARef,
+    audioBRef,
+    audioEvents,
+    changeBy,
+    currentIndex,
+    currentTime,
+    duration,
+    isPlaying,
+    playerState,
+    seekTo,
+    selectTrack,
+    togglePlayback,
+  } = useContinuousPlayer({
+    tracks: initialTracks,
+    repeatMode,
+    shuffleEnabled,
+    loadError,
+  });
   const track = initialTracks[currentIndex];
 
   useEffect(() => {
@@ -116,20 +124,6 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [isPlaylistOpen]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !track) return;
-
-    audio.load();
-    if (resumeAfterTrackChangeRef.current) {
-      resumeAfterTrackChangeRef.current = false;
-      void audio.play().catch(() => {
-        setIsPlaying(false);
-        setPlayerState("PLAYBACK ERROR");
-      });
-    }
-  }, [track]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -242,13 +236,7 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
       window.removeEventListener("resize", startOrStopVisualization);
       motionQuery.removeEventListener("change", startOrStopVisualization);
     };
-  }, [isPlaying, theme]);
-
-  useEffect(() => {
-    return () => {
-      if (audioContextRef.current) void audioContextRef.current.close();
-    };
-  }, []);
+  }, [analyserRef, isPlaying, theme]);
 
   function toggleTheme() {
     const nextTheme: PlayerTheme = theme === "white" ? "amber" : "white";
@@ -267,95 +255,14 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
     }
   }
 
-  async function prepareVisualization(audio: HTMLAudioElement) {
-    let audioContext = audioContextRef.current;
-    if (!audioContext) {
-      audioContext = new AudioContext();
-      const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 512;
-      analyser.minDecibels = -90;
-      analyser.maxDecibels = -8;
-      analyser.smoothingTimeConstant = 0.76;
-      const mediaSource = audioContext.createMediaElementSource(audio);
-      mediaSource.connect(analyser);
-      analyser.connect(audioContext.destination);
-      audioContextRef.current = audioContext;
-      analyserRef.current = analyser;
-      mediaSourceRef.current = mediaSource;
-    }
-
-    if (audioContext.state === "suspended") await audioContext.resume();
-  }
-
-  async function togglePlayback() {
-    const audio = audioRef.current;
-    if (!audio || !track) return;
-
-    if (!audio.paused) {
-      audio.pause();
-      return;
-    }
-
-    setPlayerState("LOADING");
-    try {
-      if (audio.error) audio.load();
-      await prepareVisualization(audio);
-      await audio.play();
-    } catch {
-      setIsPlaying(false);
-      setPlayerState("PLAYBACK ERROR");
-    }
-  }
-
-  function getShuffledIndex() {
-    if (initialTracks.length < 2) return currentIndex;
-    const randomValues = new Uint32Array(1);
-    window.crypto.getRandomValues(randomValues);
-    const offset = 1 + (randomValues[0] % (initialTracks.length - 1));
-    return (currentIndex + offset) % initialTracks.length;
-  }
-
-  function changeToTrack(nextIndex: number, resumePlayback: boolean) {
-    if (!initialTracks[nextIndex] || nextIndex === currentIndex) return;
-    const audio = audioRef.current;
-    resumeAfterTrackChangeRef.current = resumePlayback;
-    audio?.pause();
-    setCurrentTime(0);
-    setDuration(initialTracks[nextIndex].durationSeconds);
-    setPlayerState("LOADING");
-    setCurrentIndex(nextIndex);
-  }
-
-  function changeTrack(direction: -1 | 1, resumePlayback = false) {
-    if (initialTracks.length < 2) return;
-    const nextIndex = shuffleEnabled && direction === 1
-      ? getShuffledIndex()
-      : getAdjacentTrackIndex(currentIndex, initialTracks.length, direction);
-    changeToTrack(
-      nextIndex,
-      resumePlayback || Boolean(audioRef.current && !audioRef.current.paused),
-    );
-  }
-
   function selectPlaylistTrack(index: number) {
-    if (index === currentIndex) {
-      void togglePlayback();
-      return;
-    }
-    changeToTrack(index, true);
+    void selectTrack(index, true);
   }
 
   function cycleRepeatMode() {
     setRepeatMode((current) =>
       current === "off" ? "all" : current === "all" ? "one" : "off",
     );
-  }
-
-  function seekTo(value: number) {
-    const audio = audioRef.current;
-    if (!audio || !Number.isFinite(value)) return;
-    audio.currentTime = value;
-    setCurrentTime(value);
   }
 
   const safeDuration = Number.isFinite(duration) && duration > 0
@@ -460,7 +367,7 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
               type="button"
               aria-label="Previous track"
               disabled={initialTracks.length < 2}
-              onClick={() => changeTrack(-1)}
+              onClick={() => void changeBy(-1)}
             ><SkipIcon direction="previous" /></button>
             <button
               className={`${styles.key} ${styles.play}`}
@@ -474,7 +381,7 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
               type="button"
               aria-label="Next track"
               disabled={initialTracks.length < 2}
-              onClick={() => changeTrack(1)}
+              onClick={() => void changeBy(1)}
             ><SkipIcon direction="next" /></button>
           </div>
         </div>
@@ -538,67 +445,34 @@ export function PublicPlayer({ initialTracks, loadError }: PublicPlayerProps) {
           </>
         ) : null}
 
-        {track ? (
-          <audio
-            ref={audioRef}
-            className={styles.audio}
-            src={track.audioUrl}
-            preload="metadata"
-            crossOrigin="anonymous"
-            onLoadedMetadata={(event) => {
-              const nextDuration = event.currentTarget.duration;
-              if (Number.isFinite(nextDuration)) setDuration(nextDuration);
-            }}
-            onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
-            onPlay={() => {
-              setIsPlaying(true);
-              setPlayerState("PLAYING");
-            }}
-            onPause={(event) => {
-              setIsPlaying(false);
-              if (!event.currentTarget.ended && playerState !== "LOADING") {
-                setPlayerState("PAUSED");
-              }
-            }}
-            onWaiting={() => setPlayerState("LOADING")}
-            onEnded={() => {
-              if (repeatMode === "one") {
-                const audio = audioRef.current;
-                if (audio) {
-                  audio.currentTime = 0;
-                  void audio.play();
-                }
-              } else if (shuffleEnabled && initialTracks.length > 1) {
-                changeToTrack(getShuffledIndex(), true);
-              } else if (currentIndex < initialTracks.length - 1) {
-                changeToTrack(currentIndex + 1, true);
-              } else if (repeatMode === "all" && initialTracks.length > 0) {
-                if (currentIndex === 0) {
-                  const audio = audioRef.current;
-                  if (audio) {
-                    audio.currentTime = 0;
-                    void audio.play();
-                  }
-                } else {
-                  changeToTrack(0, true);
-                }
-              } else {
-                setIsPlaying(false);
-                setCurrentTime(0);
-                setPlayerState("READY");
-              }
-            }}
-            onCanPlay={() => {
-              if (audioRef.current?.paused && playerState === "LOADING") {
-                setPlayerState("READY");
-              }
-            }}
-            onError={() => {
-              setIsPlaying(false);
-              setPlayerState("PLAYBACK ERROR");
-            }}
-          />
-        ) : null}
+        <audio
+          className={styles.audio}
+          crossOrigin="anonymous"
+          onCanPlay={(event) => audioEvents.onCanPlay(0, event)}
+          onEnded={() => audioEvents.onEnded(0)}
+          onError={() => audioEvents.onError(0)}
+          onLoadedMetadata={(event) => audioEvents.onLoadedMetadata(0, event)}
+          onPause={(event) => audioEvents.onPause(0, event)}
+          onPlay={() => audioEvents.onPlay(0)}
+          onTimeUpdate={(event) => audioEvents.onTimeUpdate(0, event.currentTarget)}
+          onWaiting={() => audioEvents.onWaiting(0)}
+          preload="auto"
+          ref={audioARef}
+        />
+        <audio
+          className={styles.audio}
+          crossOrigin="anonymous"
+          onCanPlay={(event) => audioEvents.onCanPlay(1, event)}
+          onEnded={() => audioEvents.onEnded(1)}
+          onError={() => audioEvents.onError(1)}
+          onLoadedMetadata={(event) => audioEvents.onLoadedMetadata(1, event)}
+          onPause={(event) => audioEvents.onPause(1, event)}
+          onPlay={() => audioEvents.onPlay(1)}
+          onTimeUpdate={(event) => audioEvents.onTimeUpdate(1, event.currentTarget)}
+          onWaiting={() => audioEvents.onWaiting(1)}
+          preload="auto"
+          ref={audioBRef}
+        />
       </section>
     </main>
   );

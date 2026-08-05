@@ -309,7 +309,7 @@ button.admin-readout {
   margin-bottom: 8px;
   padding: 8px;
   display: grid;
-  grid-template-columns: 16px minmax(0, 1fr) auto;
+  grid-template-columns: 16px minmax(0, 1fr) 44px auto;
   align-items: center;
   gap: 12px;
   position: relative;
@@ -377,6 +377,44 @@ button.admin-readout {
   white-space: nowrap;
 }
 
+.track-preview-button {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-control);
+  color: var(--accent);
+  box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+  cursor: pointer;
+}
+
+.track-preview-button[aria-pressed="true"] {
+  color: #ffffff;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--glow), inset 1px 1px 2px rgb(255 255 255 / 22%);
+}
+
+.track-preview-button:active {
+  scale: 0.97;
+  box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+}
+
+.track-preview-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.track-preview-button.is-loading svg {
+  animation: admin-preview-pulse 700ms ease-in-out infinite alternate;
+}
+
+@keyframes admin-preview-pulse {
+  to { opacity: 0.35; }
+}
+
 .track-copy h2 {
   font-size: 16px;
   font-weight: 600;
@@ -398,9 +436,9 @@ button.admin-readout {
 }
 
 .track-edit-target a {
-  min-width: 68px;
+  min-width: 60px;
   height: 38px;
-  padding: 0 20px;
+  padding: 0 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -413,6 +451,10 @@ button.admin-readout {
   letter-spacing: 0.04em;
   text-decoration: none;
   text-transform: uppercase;
+}
+
+.admin-preview-audio {
+  display: none;
 }
 
 .catalog-state {

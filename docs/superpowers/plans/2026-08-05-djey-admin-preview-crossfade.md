@@ -30,7 +30,7 @@
 - `resolveQueuedTrackIndex` consumes `{ currentIndex, trackCount, intent, repeatMode, shuffleEnabled, shuffledIndex }`, where `intent` is `"automatic" | "next" | "previous"` and `repeatMode` is `"off" | "all" | "one"`.
 - It returns a valid track index or `null` when Repeat Off reaches the final track.
 
-- [ ] **Step 1: Write failing queue and gain tests**
+- [x] **Step 1: Write failing queue and gain tests**
 
 ```ts
 test("equal-power gains preserve full endpoints and balanced midpoint", () => {
@@ -49,10 +49,10 @@ test("automatic queue resolution preserves repeat and shuffle contracts", () => 
 });
 ```
 
-- [ ] **Step 2: Run `npm test -- tests/continuous-playback.test.ts` and observe missing-module failure**
-- [ ] **Step 3: Implement clamped gain math, exact three-second threshold, and queue rules without mutating inputs**
-- [ ] **Step 4: Run the focused test and confirm every new case passes**
-- [ ] **Step 5: Run `npm test` to catch regression in existing navigation helpers**
+- [x] **Step 2: Run `npm test -- tests/continuous-playback.test.ts` and observe missing-module failure**
+- [x] **Step 3: Implement clamped gain math, exact three-second threshold, and queue rules without mutating inputs**
+- [x] **Step 4: Run the focused test and confirm every new case passes**
+- [x] **Step 5: Run `npm test` to catch regression in existing navigation helpers**
 
 ### Task 2: Owner catalog preview
 
@@ -64,18 +64,18 @@ test("automatic queue resolution preserves repeat and shuffle contracts", () => 
 - Modify: `docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`
 
 **Interfaces:**
-- The preview route keeps `GET` and returns `{ url: string }` only after `requireOwner()` and an authenticated lookup of any track status.
-- The catalog owns `previewAudioRef`, `previewTrackId`, `previewLoadingId`, `previewPlaying`, and a per-page signed URL cache.
-- `togglePreview(trackId)` pauses the previous track, fetches `/api/admin/tracks/${trackId}/preview` when needed, assigns the URL, and calls `play()`.
+- The preview route keeps `GET` and returns a private no-store `307` only after `requireOwner()` and an authenticated lookup of any track status.
+- The catalog owns `previewAudioRef`, `previewTrackId`, `previewLoadingId`, and `previewPlaying`; the browser follows the owner-only route without storing the signed URL in React state.
+- `togglePreview(trackId)` pauses the previous track, assigns `/api/admin/tracks/${trackId}/preview`, and calls `play()` within the originating user gesture.
 
-- [ ] **Step 1: Confirm the existing route signs both statuses only after `requireOwner()` and add `Cache-Control: private, no-store` to its success response**
-- [ ] **Step 2: Add local `play` and `pause` paths to `AdminIcon`**
-- [ ] **Step 3: Add one hidden `<audio preload="metadata">` plus Play/Pause state and cleanup to `AdminCatalog`**
-- [ ] **Step 4: Insert a `44px` circular preview button between track copy and Edit, with `data-no-reorder` and track-specific aria labels**
-- [ ] **Step 5: Update the catalog grid/CSS so four compact cards remain visible and both theme states use restrained tactile styling**
-- [ ] **Step 6: Make filter changes preserve playback, track switches stop the prior element, failures show `Preview unavailable`, and unmount clears the source**
-- [ ] **Step 7: Amend the owner-admin design contract so Play/Pause is the only newly approved per-card action**
-- [ ] **Step 8: Run typecheck, lint, and the full Node test suite**
+- [x] **Step 1: Confirm the existing route signs both statuses only after `requireOwner()` and add `Cache-Control: private, no-store` to its success response**
+- [x] **Step 2: Add local `play` and `pause` paths to `AdminIcon`**
+- [x] **Step 3: Add one hidden `<audio preload="metadata">` plus Play/Pause state and cleanup to `AdminCatalog`**
+- [x] **Step 4: Insert a `44px` circular preview button between track copy and Edit, with `data-no-reorder` and track-specific aria labels**
+- [x] **Step 5: Update the catalog grid/CSS so four compact cards remain visible and both theme states use restrained tactile styling**
+- [x] **Step 6: Make filter changes preserve playback, track switches stop the prior element, failures show `Preview unavailable`, and unmount clears the source**
+- [x] **Step 7: Amend the owner-admin design contract so Play/Pause is the only newly approved per-card action**
+- [x] **Step 8: Run typecheck, lint, and the full Node test suite**
 
 ### Task 3: Two-channel public audio controller
 
@@ -89,17 +89,17 @@ test("automatic queue resolution preserves repeat and shuffle contracts", () => 
 - Two audio slots alternate active/standby roles. Each `MediaElementAudioSourceNode` feeds its own `GainNode`; both gains feed one shared `AnalyserNode`, then the destination.
 - The hook owns preload resolution, cancellation, automatic threshold checks, fallback `ended`, and teardown.
 
-- [ ] **Step 1: Extend focused tests for the three-second threshold, no-next final track, short tracks, previous behavior, and stable shuffled index**
-- [ ] **Step 2: Observe the new tests fail against the incomplete helpers/controller contract**
-- [ ] **Step 3: Create two audio refs, slot-to-index refs, current state, transition cancellation, and media event registration**
-- [ ] **Step 4: Initialize AudioContext/source/gain/analyser nodes on the first user playback gesture and make cleanup idempotent**
-- [ ] **Step 5: Preload the resolved standby URL with `preload="auto"` without exposing Storage paths**
-- [ ] **Step 6: Schedule sampled equal-power gain curves for exactly three seconds; after completion pause/reset outgoing, swap roles, and preload the following target**
-- [ ] **Step 7: Route automatic advance, Next, Previous, and playing playlist selection through the same crossfade; paused selection switches directly**
-- [ ] **Step 8: Implement repeat off/all/one, stable shuffle preselection, seek cancellation, late-standby fallback, and second-transition cancellation**
-- [ ] **Step 9: Keep UI state synchronized to the incoming channel and report `PLAYBACK ERROR` only when no playable active channel remains**
-- [ ] **Step 10: Render both hidden audio elements from `PublicPlayer`, consume the hook, and retain existing visual canvas/playlist/theme markup**
-- [ ] **Step 11: Run focused tests, full tests, typecheck, and zero-warning lint**
+- [x] **Step 1: Extend focused tests for the three-second threshold, no-next final track, short tracks, previous behavior, and stable shuffled index**
+- [x] **Step 2: Observe the new tests fail against the incomplete helpers/controller contract**
+- [x] **Step 3: Create two audio refs, slot-to-index refs, current state, transition cancellation, and media event registration**
+- [x] **Step 4: Initialize AudioContext/source/gain/analyser nodes on the first user playback gesture and make cleanup idempotent**
+- [x] **Step 5: Preload the resolved standby URL with `preload="auto"` without exposing Storage paths**
+- [x] **Step 6: Schedule sampled equal-power gain curves for exactly three seconds; after completion pause/reset outgoing, swap roles, and preload the following target**
+- [x] **Step 7: Route automatic advance, Next, Previous, and playing playlist selection through the same crossfade; paused selection switches directly**
+- [x] **Step 8: Implement repeat off/all/one, stable shuffle preselection, seek cancellation, late-standby fallback, and second-transition cancellation**
+- [x] **Step 9: Keep UI state synchronized to the incoming channel and report `PLAYBACK ERROR` only when no playable active channel remains**
+- [x] **Step 10: Render both hidden audio elements from `PublicPlayer`, consume the hook, and retain existing visual canvas/playlist/theme markup**
+- [x] **Step 11: Run focused tests, full tests, typecheck, and zero-warning lint**
 
 ### Task 4: Local browser verification
 
@@ -110,11 +110,13 @@ test("automatic queue resolution preserves repeat and shuffle contracts", () => 
 - Public story: Play → next route preloads → final three seconds overlap → incoming metadata/timeline/spectrum takes ownership.
 - Owner story: signed-in catalog → Play draft/published → owner route signs private object → only one hidden audio element plays.
 
-- [ ] **Step 1: Run `npm run build` and `git diff --check`**
+- [x] **Step 1: Run `npm run build` and `git diff --check`**
 - [ ] **Step 2: Start the local app without resetting Supabase and verify the public player has two audio elements, one active output, synchronized controls, and no console errors**
-- [ ] **Step 3: Verify automatic and manual transitions with real audio when local catalog access is available; otherwise record the local data limitation and defer the real-audio gate to production**
+- [x] **Step 3: Verify automatic and manual transitions with real audio when local catalog access is available; otherwise record the local data limitation and defer the real-audio gate to production**
 - [ ] **Step 4: Verify owner catalog row geometry and Play/Pause interaction in White Neon and Dark Amber using an existing owner session**
 - [ ] **Step 5: Verify draft preview remains unavailable through the public audio route**
+
+Local browser note: the local public catalog request completed without tracks and rendered `ERROR`, while the saved local owner credentials were rejected. Real-audio overlap and published/draft owner preview are therefore deferred to the authorized production verification after deployment; the local build, route protection redirect, and two-channel rendered contract remain covered by the release gate.
 
 ### Task 5: Documentation, GitHub, production deployment, and end-to-end proof
 
@@ -126,8 +128,8 @@ test("automatic queue resolution preserves repeat and shuffle contracts", () => 
 **Interfaces:**
 - Release commit contains implementation, tests, contracts, plan completion, and handoff; no env files or temporary browser artifacts.
 
-- [ ] **Step 1: Update design/tasks with the approved owner preview and crossfade contracts plus actual verification status**
-- [ ] **Step 2: Rerun `npm run typecheck`, `npm run lint -- --max-warnings=0`, `npm test`, `npm run build`, and `git diff --check`**
+- [x] **Step 1: Update design/tasks with the approved owner preview and crossfade contracts plus actual verification status**
+- [x] **Step 2: Rerun `npm run typecheck`, `npm run lint -- --max-warnings=0`, `npm test`, `npm run build`, and `git diff --check`**
 - [ ] **Step 3: Inspect the complete diff, stage only scoped files, commit, and push `codex/djey-player-redesign`**
 - [ ] **Step 4: Deploy the linked Vercel project to production and wait for `READY`**
 - [ ] **Step 5: Verify canonical and secondary aliases return `200`, guest `/admin` redirects, and published range delivery returns `206 audio/mpeg`**

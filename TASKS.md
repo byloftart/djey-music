@@ -74,6 +74,16 @@ Release checkpoint: local typecheck, zero-warning lint, all 32 Node tests, produ
 - [x] Publish commits `d595ee3` and `b030fcf` to the open draft PR and deploy the final correction as production deployment `dpl_z5Q7v2qP4hYVKe4ys61xS6Uw7c5K`.
 - [x] Verify the final production player with real audio: the paused spectrum has zero fixed rows, active columns move below the ceiling with softer glow, the authored-case marquee travels from beyond the right display edge fully beyond the left edge, playback reaches `PLAYING`, the audio route returns `206 audio/mpeg`, and guest `/admin` still redirects to sign-in.
 
+### Owner preview and continuous playback: 2026-08-05
+
+- [x] Add one compact owner-only Play/Pause control to every catalog row without changing Add/Edit, publishing, ordering, or public visibility rules.
+- [x] Allow the owner preview route to resolve both published and draft audio through a private, non-cacheable, short-lived signed redirect after `requireOwner()`.
+- [x] Replace the public player's single audio element with two preloaded channels mixed through the shared analyser.
+- [x] Use a three-second equal-power crossfade for automatic advance and for Next, Previous, or playlist selection while playback is active; keep paused track changes direct.
+- [x] Preserve repeat-off/all/one, listener-local shuffle, persisted catalog order, the title-triggered playlist, the calibrated spectrum, and the authored-case marquee.
+- [ ] Verify owner preview for one published track and one draft track in an authenticated production admin session after deployment.
+- [ ] Verify an automatic near-end crossfade and a manual Next crossfade with real production audio after deployment.
+
 Known dependency follow-up: `npm audit --omit=dev` currently reports three high-severity transitive advisories through the latest stable Next.js dependency tree (`postcss` and `sharp`). Do not run the suggested forced downgrade to Next.js 9; upgrade to the first compatible patched Next.js release and re-run the full gate.
 
 ## Later phases and hardening

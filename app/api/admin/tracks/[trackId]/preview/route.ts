@@ -43,5 +43,11 @@ export async function GET(_request: NextRequest, { params }: PreviewRouteProps) 
     );
   }
 
-  return NextResponse.json({ url: data.signedUrl });
+  return new NextResponse(null, {
+    status: 307,
+    headers: {
+      Location: data.signedUrl,
+      "Cache-Control": "private, no-store",
+    },
+  });
 }

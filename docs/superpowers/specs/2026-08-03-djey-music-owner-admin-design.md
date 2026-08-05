@@ -74,8 +74,8 @@ The approved player prototype at `design/prototypes/djey-music-mobile-player.htm
 - A small status indicator occupies a narrow left column and is vertically centered between the title and genre lines.
 - Green indicator means Published; red indicator means Draft. The DOM also carries an English accessible status label.
 - Title and `genre · DJey` begin on the same left alignment line.
-- Each card has exactly one visible action: `Edit`.
-- The visible Edit control is approximately `38px` high while its effective touch target remains at least `44px`.
+- Each card has exactly two visible actions: a compact circular Play/Pause preview and `Edit`. Preview is owner-only and supports both Draft and Published tracks through the trusted preview route.
+- The Play/Pause control has a `44px` circular touch target. The visible Edit control is approximately `38px` high while its effective touch target remains at least `44px`.
 - There is no per-track overflow menu and no separate status-badge row.
 
 ### Reorder behavior

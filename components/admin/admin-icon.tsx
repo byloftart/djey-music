@@ -5,6 +5,8 @@ type AdminIconName =
   | "list-music"
   | "log-out"
   | "moon"
+  | "pause"
+  | "play"
   | "plus"
   | "trash"
   | "sun"
@@ -45,6 +47,8 @@ export function AdminIcon({ name, size = 20 }: AdminIconProps) {
       </>
     ),
     moon: <path d="M20.6 15.3A8.5 8.5 0 0 1 8.7 3.4 8.5 8.5 0 1 0 20.6 15.3Z" />,
+    pause: <path d="M8 5h3v14H8zM14 5h3v14h-3z" fill="currentColor" stroke="none" />,
+    play: <path d="M8 5v14l11-7z" fill="currentColor" stroke="none" />,
     plus: <path d="M12 5v14M5 12h14" />,
     sun: (
       <>

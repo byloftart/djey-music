@@ -1,10 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { useRouter } from "next/navigation";
 
 import { AdminIcon } from "@/components/admin/admin-icon";
+import {
+  getAdminPreviewButtonState,
+  getAdminPreviewUrl,
+} from "@/lib/tracks/admin-preview";
 import { reorderVisibleTracks } from "@/lib/tracks/track-order";
 
 export type AdminTrack = {
@@ -37,6 +41,11 @@ export function AdminCatalog({ initialTracks, loadError }: AdminCatalogProps) {
   const [draggingId, setDraggingId] = useState<string>();
   const [overId, setOverId] = useState<string>();
   const [toast, setToast] = useState("");
+  const [previewTrackId, setPreviewTrackId] = useState<string>();
+  const [previewLoadingId, setPreviewLoadingId] = useState<string>();
+  const [previewPlaying, setPreviewPlaying] = useState(false);
+  const previewAudioRef = useRef<HTMLAudioElement>(null);
+  const toastTimer = useRef<number | undefined>(undefined);
   const longPressTimer = useRef<number | undefined>(undefined);
   const startPoint = useRef({ x: 0, y: 0 });
   const activePointer = useRef<number | undefined>(undefined);
@@ -46,6 +55,51 @@ export function AdminCatalog({ initialTracks, loadError }: AdminCatalogProps) {
     () => tracks.filter((track) => filter === "all" || track.status === filter),
     [filter, tracks],
   );
+
+  useEffect(() => {
+    const audio = previewAudioRef.current;
+    return () => {
+      if (toastTimer.current) window.clearTimeout(toastTimer.current);
+      if (!audio) return;
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
+    };
+  }, []);
+
+  function showToast(message: string) {
+    if (toastTimer.current) window.clearTimeout(toastTimer.current);
+    setToast(message);
+    toastTimer.current = window.setTimeout(() => setToast(""), 1800);
+  }
+
+  async function togglePreview(trackId: string) {
+    const audio = previewAudioRef.current;
+    if (!audio) return;
+
+    if (previewTrackId === trackId) {
+      if (!audio.paused) {
+        audio.pause();
+        return;
+      }
+      if (audio.ended) audio.currentTime = 0;
+    } else {
+      audio.pause();
+      audio.currentTime = 0;
+      setPreviewTrackId(trackId);
+      audio.src = getAdminPreviewUrl(trackId);
+      audio.load();
+    }
+
+    setPreviewLoadingId(trackId);
+    try {
+      await audio.play();
+    } catch {
+      setPreviewLoadingId(undefined);
+      setPreviewPlaying(false);
+      showToast("Preview unavailable");
+    }
+  }
 
   function clearLongPress() {
     if (longPressTimer.current) {
@@ -72,12 +126,10 @@ export function AdminCatalog({ initialTracks, loadError }: AdminCatalogProps) {
         body: JSON.stringify({ orderedIds: nextTracks.map((track) => track.id) }),
       });
       if (!response.ok) throw new Error("Order update failed");
-      setToast("Order updated");
+      showToast("Order updated");
     } catch {
       setTracks(previousTracks);
-      setToast("Order update failed");
-    } finally {
-      window.setTimeout(() => setToast(""), 1600);
+      showToast("Order update failed");
     }
   }
 
@@ -197,8 +249,14 @@ export function AdminCatalog({ initialTracks, loadError }: AdminCatalogProps) {
                 <p>{tracks.length === 0 ? "No tracks yet." : `No ${FILTER_LABELS[filter].toLowerCase()}.`}</p>
               </div>
             ) : (
-              visibleTracks.map((track) => (
-                <article
+              visibleTracks.map((track) => {
+                const previewState = getAdminPreviewButtonState(track.id, {
+                  activeTrackId: previewTrackId,
+                  loadingTrackId: previewLoadingId,
+                  playing: previewPlaying,
+                });
+                return (
+                  <article
                   aria-label={`${track.title}. ${track.status}. Hold and drag to reorder, or use Alt and arrow keys.`}
                   className={`track-card admin-raised${draggingId === track.id ? " is-dragging" : ""}${overId === track.id && draggingId !== track.id ? " is-destination" : ""}`}
                   data-track-id={track.id}
@@ -226,15 +284,49 @@ export function AdminCatalog({ initialTracks, loadError }: AdminCatalogProps) {
                     <h2>{track.title}</h2>
                     <p>{track.genre || "Uncategorized"} · DJey</p>
                   </div>
+                  <button
+                    aria-busy={previewState === "loading"}
+                    aria-label={`${previewState === "pause" ? "Pause" : "Play"} ${track.title}`}
+                    aria-pressed={previewState === "pause"}
+                    className={`track-preview-button${previewState === "loading" ? " is-loading" : ""}`}
+                    data-no-reorder
+                    onClick={() => void togglePreview(track.id)}
+                    type="button"
+                  >
+                    <AdminIcon name={previewState === "pause" ? "pause" : "play"} size={17} />
+                  </button>
                   <div className="track-edit-target" data-no-reorder>
                     <Link href={`/admin/tracks/${track.id}/edit`}>Edit</Link>
                   </div>
-                </article>
-              ))
+                  </article>
+                );
+              })
             )}
           </div>
         </div>
       </section>
+      <audio
+        className="admin-preview-audio"
+        onEnded={() => {
+          setPreviewPlaying(false);
+          setPreviewLoadingId(undefined);
+        }}
+        onError={() => {
+          setPreviewPlaying(false);
+          setPreviewLoadingId(undefined);
+          showToast("Preview unavailable");
+        }}
+        onPause={() => setPreviewPlaying(false)}
+        onPlay={() => {
+          setPreviewPlaying(true);
+          setPreviewLoadingId(undefined);
+        }}
+        onWaiting={() => {
+          if (previewTrackId) setPreviewLoadingId(previewTrackId);
+        }}
+        preload="metadata"
+        ref={previewAudioRef}
+      />
       <div className={`admin-toast${toast ? " is-visible" : ""}`} role="status">
         {toast}
       </div>

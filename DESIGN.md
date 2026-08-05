@@ -51,6 +51,7 @@ Direct playlist interaction correction approved for design exploration on 2026-0
 - Silence and pauses draw zero LEDs: there is no forced minimum row. Normal musical energy must remain below the ceiling, while genuine peaks may use the full useful height; analyser range and smoothing should preserve clearly rhythmic movement without artificial maximum-brightness amplification.
 - The active authored-case title remains a masked running marquee and the playlist trigger. It pauses briefly at the readable starting position before moving; `prefers-reduced-motion` keeps it stationary.
 - The transport is one centered tactile group: slightly larger previous/play/next buttons use fixed symmetric gaps rather than spreading to the panel edges.
+- Public playlist playback is continuous: the next published track is preloaded on a second hidden audio channel and mixed into the same analyser with a three-second equal-power crossfade. Automatic advance and manual Next, Previous, or playlist selection crossfade only while audio is already playing; changing tracks while paused remains immediate and silent.
 
 ## Themes
 
@@ -86,6 +87,8 @@ Direct owner-admin corrections approved on 2026-08-03 amend the theme relationsh
 - The admin remains a centered mobile composition even on wide laptop browsers; desktop adaptation remains deferred.
 
 The owner-admin catalog and full-screen Add/Edit Track compositions are approved. Their exact contract is in `docs/superpowers/specs/2026-08-03-djey-music-owner-admin-design.md`. Production implementation must preserve the sparse audio-only editor without reopening catalog exploration.
+
+Each owner catalog row may include one compact tactile Play/Pause preview control between the track copy and Edit. Only one preview may play at a time. It is available for published and draft tracks only after the existing owner boundary, uses private non-cacheable media delivery, and must not expose draft metadata or signed Storage URLs to the public player.
 
 These items may be designed later without changing the approved mobile hierarchy.
 

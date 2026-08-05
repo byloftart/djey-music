@@ -46,8 +46,8 @@ The existing `GET /api/admin/tracks/[trackId]/preview` route remains the only so
 1. The client requests the route only after the owner presses Play.
 2. The route calls `requireOwner()` before reading track metadata.
 3. The authenticated owner query may select both `draft` and `published` rows.
-4. The server creates a short-lived signed URL for the private `track-audio` object and returns it with `Cache-Control: private, no-store`.
-5. The signed URL is assigned only to the catalog's hidden preview `<audio>` element.
+4. The server creates a short-lived signed URL for the private `track-audio` object and returns a `307` redirect with `Cache-Control: private, no-store`.
+5. The catalog assigns only the authenticated application preview route to its hidden `<audio>` element, allowing the browser to retain the original playback gesture while following the private redirect.
 
 The public `/api/tracks/[trackId]/audio` route is unchanged and continues to require `status = published`. No public policy or bucket visibility changes are required.
 

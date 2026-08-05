@@ -23,7 +23,7 @@ The canonical player prototype remains `design/prototypes/djey-music-mobile-play
 The protected owner area now provides:
 
 1. Owner-only sign-in with no public signup.
-2. A compact media catalog showing title, draft/published status, manual order, and one Edit action without cover artwork.
+2. A compact media catalog showing title, draft/published status, manual order, owner-only Play/Pause preview, and Edit without cover artwork.
 3. A sparse Add/Edit surface with one audio upload control and visible Title, Genre, Tags, read-only `mm:ss` Duration, and two-line Description fields.
 4. Audio validation before upload, including the configured byte limit, accepted type, normalized path, progress, cancellation, and visible error recovery. Format and size helper copy stays hidden at rest.
 5. Automatic title/slug derivation, draft save, explicit publish/unpublish, reorder, and metadata update. Public download remains disabled.
@@ -34,9 +34,9 @@ The protected owner area now provides:
 
 - Header: centered `DJey Music / Admin Panel`, left account control revealing `Sign Out`, and one White Neon/Dark Amber switch on the right.
 - Equal illuminated readouts: `48 TRACKS TOTAL` and the `All Tracks / Published / Drafts` filter.
-- Compact catalog cards show no cover, no numeric order, no text status badge, and no overflow menu.
+- Compact catalog cards show no cover, no numeric order, no text status badge, and no overflow menu. Their only visible actions are a circular owner-only Play/Pause preview and Edit.
 - Green status indicator means Published; red means Draft. It sits in a narrow left column centered between the title and genre lines.
-- Each card has one `Edit` action. Publish/Unpublish and Delete belong in the full-screen editor; Preview is intentionally absent from the approved editor.
+- Each card has Play/Pause preview and `Edit`. Publish/Unpublish and Delete belong in the full-screen editor; preview controls remain absent from the approved editor surface itself.
 - Long-press reorder must preserve native scrolling, suppress iOS text selection, show a lifted card and insertion placeholder, persist `display_order`, and confirm `Order updated`.
 - The full-width `Add Track` dock remains above iOS browser controls through dynamic viewport sizing, normal flex flow, and safe-area padding.
 
