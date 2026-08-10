@@ -1,0 +1,3 @@
+-- Intentionally empty. Create the owner through the trusted Supabase Admin
+-- boundary, then map that auth user to private.owner_allowlist using secure SQL.
+-- Never commit a real owner email or credential to this file.
